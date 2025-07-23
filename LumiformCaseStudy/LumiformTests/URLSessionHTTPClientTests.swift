@@ -8,35 +8,6 @@
 import XCTest
 import Lumiform
 
-final class URLSessionHTTPClient: HTTPClient {
-    private struct UnexpectedValuesError: Error {}
-
-    typealias Response = (Data, HTTPURLResponse)
-    typealias Result = Swift.Result<Response, Error>
-
-    private let session: URLSession
-
-    init(session: URLSession) {
-        self.session = session
-    }
-
-    func get(from url: URL, completion: @escaping (Result) -> Void) {
-        let request = URLRequest(url: url)
-        let dataTask = session.dataTask(with: request) { data, response, error in
-            completion(Result {
-                if let error {
-                    throw error
-                } else if let data, let response = response as? HTTPURLResponse {
-                    return (data, response)
-                } else {
-                    throw UnexpectedValuesError()
-                }
-            })
-        }
-        dataTask.resume()
-    }
-}
-
 final class URLSessionHTTPClientTests: XCTestCase {
 
     override func tearDown() {
