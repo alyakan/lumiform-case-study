@@ -8,6 +8,8 @@
 import XCTest
 
 final class URLSessionHTTPClient {
+    private struct UnexpectedValuesError: Error {}
+
     typealias Response = (Data, HTTPURLResponse)
     typealias Result = Swift.Result<Response, Error>
 
@@ -20,13 +22,15 @@ final class URLSessionHTTPClient {
     func get(from url: URL, completion: @escaping (Result) -> Void) {
         let request = URLRequest(url: url)
         let dataTask = session.dataTask(with: request) { data, response, error in
-            if let error {
-                return completion(.failure(error))
-            }
-
-            if let data, let response = response as? HTTPURLResponse {
-                return completion(.success((data, response)))
-            }
+            completion(Result {
+                if let error {
+                    throw error
+                } else if let data, let response = response as? HTTPURLResponse {
+                    return (data, response)
+                } else {
+                    throw UnexpectedValuesError()
+                }
+            })
         }
         dataTask.resume()
     }
