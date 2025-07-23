@@ -48,7 +48,10 @@ final class URLSessionHTTPClientTests: XCTestCase {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [URLProtocolStub.self]
         let session = URLSession(configuration: configuration)
-        return URLSessionHTTPClient(session: session)
+        let sut = URLSessionHTTPClient(session: session)
+
+        trackForMemoryLeaks(sut)
+        return sut
     }
 
     private class URLProtocolStub: URLProtocol {
