@@ -13,7 +13,7 @@ final class RemoteFormLoader {
     private let client: HTTPClient
 
     enum Error: Swift.Error {
-        case connectivity
+        case connectivity, invalidData
     }
 
     init(url: URL, client: HTTPClient) {
@@ -23,7 +23,14 @@ final class RemoteFormLoader {
 
     func load(completion: @escaping (Result<Data, Error>) -> Void) {
         client.get(from: url) { result in
-            completion(.failure(.connectivity))
+            switch result {
+            case let .success((data, response)):
+                if response.statusCode != 200 {
+                    completion(.failure(.invalidData))
+                }
+            case .failure:
+                completion(.failure(.connectivity))
+            }
         }
     }
 }
@@ -63,6 +70,28 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
 
+    func test_load_deliversErrorOnNon200HTTPClientResponse() {
+        let (sut, client) = makeSUT()
+        let expectedError = RemoteFormLoader.Error.invalidData
+        let samples = [199, 201, 300, 400, 500].enumerated()
+
+        samples.forEach { index, code in
+            let exp = expectation(description: "Waiting for completion")
+            sut.load { result in
+                switch result {
+                case .success(let receivedData):
+                    XCTFail("Expected error, got: \(receivedData)")
+                case .failure(let receivedError as RemoteFormLoader.Error):
+                    XCTAssertEqual(receivedError, expectedError)
+                }
+                exp.fulfill()
+            }
+            let json = makeItemsJSON([:])
+            client.complete(withStatusCode: code, data: json, at: index)
+            wait(for: [exp], timeout: 0.1)
+        }
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
@@ -73,9 +102,14 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
 
         let client = HTTPClientSpy()
         let sut = RemoteFormLoader(url: url, client: client)
-        trackForMemoryLeaks(client)
-        trackForMemoryLeaks(sut)
+        trackForMemoryLeaks(client, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, client)
+    }
+
+    private func makeItemsJSON(_ items: [String: Any]) -> Data {
+        let itemsJSON = ["items": items]
+        return try! JSONSerialization.data(withJSONObject: itemsJSON)
     }
 
     final class HTTPClientSpy: HTTPClient {
@@ -91,6 +125,17 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
 
         func complete(with error: Error, at index: Int = 0) {
             receivedMessages[index].completion(.failure(error))
+        }
+
+        func complete(withStatusCode statusCode: Int, data: Data, at index: Int = 0) {
+            let response = HTTPURLResponse(
+                url: receivedMessages[index].url,
+                statusCode: statusCode,
+                httpVersion: nil,
+                headerFields: nil
+            )!
+
+            receivedMessages[index].completion(.success((data, response)))
         }
     }
 }
