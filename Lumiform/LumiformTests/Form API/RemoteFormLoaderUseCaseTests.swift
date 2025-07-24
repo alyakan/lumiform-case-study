@@ -8,7 +8,94 @@
 import XCTest
 import Lumiform
 
-struct Form: Equatable {}
+struct Form: Equatable {
+    let rootPage: FormItem
+}
+
+// We decode based on the `type` field.
+enum FormItem: Equatable, Decodable {
+    case page(Page)
+    case section(Section)
+    case question(Question)
+
+    enum CodingKeys: String, CodingKey {
+        case type
+    }
+
+    enum ItemType: String, Decodable {
+        case page, section, text, image
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(ItemType.self, forKey: .type)
+        let singleValueContainer = try decoder.singleValueContainer()
+
+        switch type {
+            case .page:
+            let page = try singleValueContainer.decode(Page.self)
+            self = .page(page)
+        case .section:
+            let section = try singleValueContainer.decode(Section.self)
+            self = .section(section)
+        case .text, .image:
+            let question = try singleValueContainer.decode(Question.self)
+            self = .question(question)
+        }
+    }
+}
+
+struct Page: Equatable, Decodable {
+    let type: String
+    let title: String
+    let items: [FormItem]
+}
+
+struct Section: Equatable, Decodable {
+    let type: String
+    let title: String
+    let items: [FormItem]
+}
+
+enum Question: Equatable, Decodable {
+    case text(TextQuestion)
+    case image(ImageQuestion)
+
+    enum CodingKeys: String, CodingKey {
+        case type
+    }
+
+    enum QuestionType: String, Decodable {
+        case text
+        case image
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let type = try container.decode(QuestionType.self, forKey: .type)
+        let singleValueContainer = try decoder.singleValueContainer()
+
+        switch type {
+        case .text:
+            let textQuestion = try singleValueContainer.decode(TextQuestion.self)
+            self = .text(textQuestion)
+        case .image:
+            let imageQuestion = try singleValueContainer.decode(ImageQuestion.self)
+            self = .image(imageQuestion)
+        }
+    }
+}
+
+struct TextQuestion: Equatable, Decodable {
+    let type: String
+    let title: String
+}
+
+struct ImageQuestion: Equatable, Decodable {
+    let type: String
+    let title: String
+    let src: String
+}
 
 final class RemoteFormLoader {
     typealias Result = Swift.Result<Form, Swift.Error>
@@ -33,7 +120,11 @@ final class RemoteFormLoader {
                     return completion(.failure(Error.invalidData))
                 }
 
-                completion(.failure(Error.invalidData))
+                guard let formItem = try? JSONDecoder().decode(FormItem.self, from: data) else {
+                    return completion(.failure(Error.invalidData))
+                }
+
+                completion(.success(Form(rootPage: formItem)))
             case .failure:
                 completion(.failure(Error.connectivity))
             }
@@ -84,6 +175,16 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         expect(sut, toCompleteWith: failure(.invalidData), when: {
             let invalidData = Data("Invalid JSON".utf8)
             client.complete(withStatusCode: 200, data: invalidData)
+        })
+    }
+
+    func test_load_deliversFormOn200HTTPResponseWithValidJSON() {
+        let (sut, client) = makeSUT()
+        let dataToReturn = FormItem.sampleData()
+        let expectedForm = Form(rootPage: dataToReturn.item)
+
+        expect(sut, toCompleteWith: .success(expectedForm), when: {
+            client.complete(withStatusCode: 200, data: dataToReturn.data)
         })
     }
 
@@ -162,5 +263,41 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
 
             receivedMessages[index].completion(.success((data, response)))
         }
+    }
+}
+
+extension FormItem {
+    static func sampleData() -> (item: FormItem, data: Data) {
+        let jsonString = """
+        {
+          "type": "page",
+          "title": "Main Page",
+          "items": [
+            {
+              "type": "section",
+              "title": "Introduction",
+              "items": [
+                {
+                  "type": "text",
+                  "title": "Welcome to the main page!"
+                },
+                {
+                  "type": "image",
+                  "src": "https://robohash.org/280?&set=set4&size=400x400",
+                  "title": "Welcome Image"
+                }
+              ]
+            }]
+        }    
+        """
+
+        let form: FormItem = .page(Page(type: "page", title: "Main Page", items: [
+            .section(Section(type: "section", title: "Introduction", items: [
+                .question(.text(TextQuestion(type: "text", title: "Welcome to the main page!"))),
+                .question(.image(ImageQuestion(type: "image", title: "Welcome Image", src: "https://robohash.org/280?&set=set4&size=400x400")))
+            ]))
+        ]))
+
+        return (form, Data(jsonString.utf8))
     }
 }
