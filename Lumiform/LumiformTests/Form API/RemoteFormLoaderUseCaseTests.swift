@@ -12,13 +12,19 @@ final class RemoteFormLoader {
     private let url: URL
     private let client: HTTPClient
 
+    enum Error: Swift.Error {
+        case connectivity
+    }
+
     init(url: URL, client: HTTPClient) {
         self.url = url
         self.client = client
     }
 
     func load(completion: @escaping (Result<Data, Error>) -> Void) {
-        client.get(from: url) { _ in }
+        client.get(from: url) { result in
+            completion(.failure(.connectivity))
+        }
     }
 }
 
@@ -39,6 +45,24 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         XCTAssertEqual(client.requestedURLs, [url])
     }
 
+    func test_load_deliversErrorOnClientError() {
+        let (sut, client) = makeSUT()
+        let expectedError = RemoteFormLoader.Error.connectivity
+
+        let exp = expectation(description: "Waiting for completion")
+        sut.load { result in
+            switch result {
+            case .success(let receivedData):
+                XCTFail("Expected error, got: \(receivedData)")
+            case .failure(let receivedError as RemoteFormLoader.Error):
+                XCTAssertEqual(receivedError, expectedError)
+            }
+            exp.fulfill()
+        }
+        client.complete(with: anyNSError())
+        wait(for: [exp], timeout: 0.1)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
@@ -55,10 +79,18 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
     }
 
     final class HTTPClientSpy: HTTPClient {
-        private(set) var requestedURLs: [URL] = []
+        private var receivedMessages: [(url: URL, completion: (HTTPClient.Result) -> Void)] = []
+
+        var requestedURLs: [URL] {
+            receivedMessages.map(\.url)
+        }
 
         func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
-            requestedURLs.append(url)
+            receivedMessages.append((url, completion))
+        }
+
+        func complete(with error: Error, at index: Int = 0) {
+            receivedMessages[index].completion(.failure(error))
         }
     }
 }
