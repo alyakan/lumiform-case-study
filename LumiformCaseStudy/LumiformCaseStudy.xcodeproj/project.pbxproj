@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -35,7 +35,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		716C80DE2E31111400F45E05 /* Exceptions for "Lumiform" folder in "Lumiform" target */ = {
+		716C80DE2E31111400F45E05 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
 				Lumiform.h,
@@ -45,29 +45,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		7127D5652E310EFF00AC7044 /* LumiformCaseStudy */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LumiformCaseStudy;
-			sourceTree = "<group>";
-		};
-		7127D5762E310F0200AC7044 /* LumiformCaseStudyTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LumiformCaseStudyTests;
-			sourceTree = "<group>";
-		};
-		716C80D02E31111300F45E05 /* Lumiform */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				716C80DE2E31111400F45E05 /* Exceptions for "Lumiform" folder in "Lumiform" target */,
-			);
-			path = Lumiform;
-			sourceTree = "<group>";
-		};
-		716C80DA2E31111400F45E05 /* LumiformTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LumiformTests;
-			sourceTree = "<group>";
-		};
+		7127D5652E310EFF00AC7044 /* LumiformCaseStudy */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LumiformCaseStudy; sourceTree = "<group>"; };
+		7127D5762E310F0200AC7044 /* LumiformCaseStudyTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LumiformCaseStudyTests; sourceTree = "<group>"; };
+		716C80D02E31111300F45E05 /* Lumiform */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (716C80DE2E31111400F45E05 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Lumiform; sourceTree = "<group>"; };
+		716C80DA2E31111400F45E05 /* LumiformTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = LumiformTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +238,7 @@
 				};
 			};
 			buildConfigurationList = 7127D55E2E310EFF00AC7044 /* Build configuration list for PBXProject "LumiformCaseStudy" */;
+			compatibilityVersion = "Xcode 15.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -265,7 +247,6 @@
 			);
 			mainGroup = 7127D55A2E310EFF00AC7044;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 7127D5642E310EFF00AC7044 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
