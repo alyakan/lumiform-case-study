@@ -1,33 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1610"
+   LastUpgradeVersion = "1540"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
+      <BuildActionEntries>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "71C51EDB2E32649A00AF92C6"
+               BuildableName = "Lumiform.framework"
+               BlueprintName = "Lumiform"
+               ReferencedContainer = "container:Lumiform.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
    </BuildAction>
    <TestAction
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
-      <TestPlans>
-         <TestPlanReference
-            reference = "container:LumiformCaseStudyTests/LumiformCaseStudyTests.xctestplan"
-            default = "YES">
-         </TestPlanReference>
-      </TestPlans>
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      shouldAutocreateTestPlan = "YES">
       <Testables>
          <TestableReference
             skipped = "NO"
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7127D5722E310F0200AC7044"
-               BuildableName = "LumiformCaseStudyTests.xctest"
-               BlueprintName = "LumiformCaseStudyTests"
-               ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
+               BlueprintIdentifier = "71C51EE32E32649B00AF92C6"
+               BuildableName = "LumiformTests.xctest"
+               BlueprintName = "LumiformTests"
+               ReferencedContainer = "container:Lumiform.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -49,6 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "71C51EDB2E32649A00AF92C6"
+            BuildableName = "Lumiform.framework"
+            BlueprintName = "Lumiform"
+            ReferencedContainer = "container:Lumiform.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

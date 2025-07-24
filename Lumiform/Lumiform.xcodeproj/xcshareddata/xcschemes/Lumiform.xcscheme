@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1610"
+   LastUpgradeVersion = "1540"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "716C80CE2E31111300F45E05"
+               BlueprintIdentifier = "71C51EDB2E32649A00AF92C6"
                BuildableName = "Lumiform.framework"
                BlueprintName = "Lumiform"
-               ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
+               ReferencedContainer = "container:Lumiform.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,10 +35,10 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "716C80D52E31111400F45E05"
+               BlueprintIdentifier = "71C51EE32E32649B00AF92C6"
                BuildableName = "LumiformTests.xctest"
                BlueprintName = "LumiformTests"
-               ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
+               ReferencedContainer = "container:Lumiform.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -63,10 +63,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "716C80CE2E31111300F45E05"
+            BlueprintIdentifier = "71C51EDB2E32649A00AF92C6"
             BuildableName = "Lumiform.framework"
             BlueprintName = "Lumiform"
-            ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
+            ReferencedContainer = "container:Lumiform.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
