@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "AE9992D6-E147-4BF5-99D4-1545F5640169",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:LumiformCaseStudy.xcodeproj",
+        "identifier" : "7127D5722E310F0200AC7044",
+        "name" : "LumiformCaseStudyTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1540"
+   LastUpgradeVersion = "1610"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "71C51EDB2E32649A00AF92C6"
-               BuildableName = "Lumiform.framework"
-               BlueprintName = "Lumiform"
-               ReferencedContainer = "container:Lumiform.xcodeproj">
+               BlueprintIdentifier = "7127D5622E310EFF00AC7044"
+               BuildableName = "LumiformCaseStudy.app"
+               BlueprintName = "LumiformCaseStudy"
+               ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,10 +35,21 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "71C51EE32E32649B00AF92C6"
-               BuildableName = "LumiformTests.xctest"
-               BlueprintName = "LumiformTests"
-               ReferencedContainer = "container:Lumiform.xcodeproj">
+               BlueprintIdentifier = "7127D5722E310F0200AC7044"
+               BuildableName = "LumiformCaseStudyTests.xctest"
+               BlueprintName = "LumiformCaseStudyTests"
+               ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7127D57C2E310F0200AC7044"
+               BuildableName = "LumiformCaseStudyUITests.xctest"
+               BlueprintName = "LumiformCaseStudyUITests"
+               ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,6 +64,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "7127D5622E310EFF00AC7044"
+            BuildableName = "LumiformCaseStudy.app"
+            BlueprintName = "LumiformCaseStudy"
+            ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -60,15 +81,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "71C51EDB2E32649A00AF92C6"
-            BuildableName = "Lumiform.framework"
-            BlueprintName = "Lumiform"
-            ReferencedContainer = "container:Lumiform.xcodeproj">
+            BlueprintIdentifier = "7127D5622E310EFF00AC7044"
+            BuildableName = "LumiformCaseStudy.app"
+            BlueprintName = "LumiformCaseStudy"
+            ReferencedContainer = "container:LumiformCaseStudy.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
