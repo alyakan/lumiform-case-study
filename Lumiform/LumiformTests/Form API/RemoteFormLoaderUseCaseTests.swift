@@ -9,6 +9,8 @@ import XCTest
 import Lumiform
 
 final class RemoteFormLoader {
+    typealias Result = Swift.Result<Data, Swift.Error>
+
     private let url: URL
     private let client: HTTPClient
 
@@ -21,15 +23,15 @@ final class RemoteFormLoader {
         self.client = client
     }
 
-    func load(completion: @escaping (Result<Data, Error>) -> Void) {
+    func load(completion: @escaping (Result) -> Void) {
         client.get(from: url) { result in
             switch result {
             case let .success((data, response)):
                 if response.statusCode != 200 {
-                    completion(.failure(.invalidData))
+                    completion(.failure(Error.invalidData))
                 }
             case .failure:
-                completion(.failure(.connectivity))
+                completion(.failure(Error.connectivity))
             }
         }
     }
@@ -54,41 +56,21 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
 
     func test_load_deliversErrorOnClientError() {
         let (sut, client) = makeSUT()
-        let expectedError = RemoteFormLoader.Error.connectivity
 
-        let exp = expectation(description: "Waiting for completion")
-        sut.load { result in
-            switch result {
-            case .success(let receivedData):
-                XCTFail("Expected error, got: \(receivedData)")
-            case .failure(let receivedError as RemoteFormLoader.Error):
-                XCTAssertEqual(receivedError, expectedError)
-            }
-            exp.fulfill()
-        }
-        client.complete(with: anyNSError())
-        wait(for: [exp], timeout: 0.1)
+        expect(sut, toCompleteWith: failure(.connectivity), when: {
+            client.complete(with: anyNSError())
+        })
     }
 
     func test_load_deliversErrorOnNon200HTTPClientResponse() {
         let (sut, client) = makeSUT()
-        let expectedError = RemoteFormLoader.Error.invalidData
         let samples = [199, 201, 300, 400, 500].enumerated()
 
         samples.forEach { index, code in
-            let exp = expectation(description: "Waiting for completion")
-            sut.load { result in
-                switch result {
-                case .success(let receivedData):
-                    XCTFail("Expected error, got: \(receivedData)")
-                case .failure(let receivedError as RemoteFormLoader.Error):
-                    XCTAssertEqual(receivedError, expectedError)
-                }
-                exp.fulfill()
-            }
-            let json = makeItemsJSON([:])
-            client.complete(withStatusCode: code, data: json, at: index)
-            wait(for: [exp], timeout: 0.1)
+            expect(sut, toCompleteWith: failure(.invalidData), when: {
+                let json = makeItemsJSON([:])
+                client.complete(withStatusCode: code, data: json, at: index)
+            })
         }
     }
 
@@ -105,6 +87,36 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         trackForMemoryLeaks(client, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, client)
+    }
+
+    private func failure(_ error: RemoteFormLoader.Error) -> RemoteFormLoader.Result {
+        .failure(error)
+    }
+
+    private func expect(
+        _ sut: RemoteFormLoader,
+        toCompleteWith expectedResult: RemoteFormLoader.Result,
+        when action: () -> Void,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+
+        let exp = expectation(description: "Waiting for completion")
+        sut.load { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case let (.success(receivedData), .success(expectedData)):
+                XCTAssertEqual(receivedData, expectedData, file: file, line: line)
+            case let (.failure(receivedError as RemoteFormLoader.Error), .failure(expectedError as RemoteFormLoader.Error)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+            default:
+                XCTFail("Expected result \(expectedResult) got \(receivedResult) instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+
+        action()
+
+        wait(for: [exp], timeout: 0.1)
     }
 
     private func makeItemsJSON(_ items: [String: Any]) -> Data {
