@@ -8,8 +8,10 @@
 import XCTest
 import Lumiform
 
+struct Form: Equatable {}
+
 final class RemoteFormLoader {
-    typealias Result = Swift.Result<Data, Swift.Error>
+    typealias Result = Swift.Result<Form, Swift.Error>
 
     private let url: URL
     private let client: HTTPClient
@@ -27,9 +29,11 @@ final class RemoteFormLoader {
         client.get(from: url) { result in
             switch result {
             case let .success((data, response)):
-                if response.statusCode != 200 {
-                    completion(.failure(Error.invalidData))
+                guard response.statusCode == 200 else {
+                    return completion(.failure(Error.invalidData))
                 }
+
+                completion(.failure(Error.invalidData))
             case .failure:
                 completion(.failure(Error.connectivity))
             }
@@ -74,6 +78,15 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         }
     }
 
+    func test_load_deliversErrorOn200HTTPResponseWithInvalidJSON() {
+        let (sut, client) = makeSUT()
+
+        expect(sut, toCompleteWith: failure(.invalidData), when: {
+            let invalidData = Data("Invalid JSON".utf8)
+            client.complete(withStatusCode: 200, data: invalidData)
+        })
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
@@ -104,8 +117,8 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         let exp = expectation(description: "Waiting for completion")
         sut.load { receivedResult in
             switch (receivedResult, expectedResult) {
-            case let (.success(receivedData), .success(expectedData)):
-                XCTAssertEqual(receivedData, expectedData, file: file, line: line)
+            case let (.success(receivedForm), .success(expectedForm)):
+                XCTAssertEqual(receivedForm, expectedForm, file: file, line: line)
             case let (.failure(receivedError as RemoteFormLoader.Error), .failure(expectedError as RemoteFormLoader.Error)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
             default:
