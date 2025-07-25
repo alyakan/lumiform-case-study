@@ -80,7 +80,7 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         url: URL = URL(string: "https://some-url.com")!,
         file: StaticString = #file,
         line: UInt = #line
-    ) -> (RemoteFormLoader, HTTPClientSpy) {
+    ) -> (FormLoader, HTTPClientSpy) {
 
         let client = HTTPClientSpy()
         let sut = RemoteFormLoader(url: url, client: client)
@@ -94,7 +94,7 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
     }
 
     private func expect(
-        _ sut: RemoteFormLoader,
+        _ sut: FormLoader,
         toCompleteWith expectedResult: RemoteFormLoader.Result,
         when action: () -> Void,
         file: StaticString = #file,
