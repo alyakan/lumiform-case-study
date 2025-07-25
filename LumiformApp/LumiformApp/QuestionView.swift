@@ -15,14 +15,14 @@ struct QuestionView: View {
         switch question {
         case .text(let textQuestion):
             Text(textQuestion.title)
-                .font(.subheadline)
+                .font(HierarchyFont.questionFont())
         case .image(let imageQuestion):
             // TODO: Display image
             Text(imageQuestion.title)
-                .font(.subheadline)
+                .font(HierarchyFont.questionFont())
         @unknown default:
             Text("Unknown question format")
-                .font(.subheadline)
+                .font(HierarchyFont.questionFont())
         }
     }
 }

@@ -15,6 +15,7 @@
 		71E5CA732E33E2D000FA179F /* Lumiform.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 71E5CA712E33E2D000FA179F /* Lumiform.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		71E5CA762E33FA8100FA179F /* FormItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA752E33FA8100FA179F /* FormItemView.swift */; };
 		71E5CA782E33FB1200FA179F /* QuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA772E33FB1200FA179F /* QuestionView.swift */; };
+		71E5CA7B2E33FF3900FA179F /* HierarchyFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA7A2E33FF3900FA179F /* HierarchyFont.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +43,7 @@
 		71E5CA712E33E2D000FA179F /* Lumiform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Lumiform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E5CA752E33FA8100FA179F /* FormItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormItemView.swift; sourceTree = "<group>"; };
 		71E5CA772E33FB1200FA179F /* QuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionView.swift; sourceTree = "<group>"; };
+		71E5CA7A2E33FF3900FA179F /* HierarchyFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HierarchyFont.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				71E5CA752E33FA8100FA179F /* FormItemView.swift */,
 				71E5CA772E33FB1200FA179F /* QuestionView.swift */,
 				71E5CA582E33DFF800FA179F /* Assets.xcassets */,
+				71E5CA792E33FF2B00FA179F /* Helpers */,
 				71E5CA5A2E33DFF800FA179F /* Preview Content */,
 			);
 			path = LumiformApp;
@@ -102,6 +105,14 @@
 				71E5CA6B2E33E10000FA179F /* Lumiform.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		71E5CA792E33FF2B00FA179F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				71E5CA7A2E33FF3900FA179F /* HierarchyFont.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,6 +186,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71E5CA7B2E33FF3900FA179F /* HierarchyFont.swift in Sources */,
 				71E5CA782E33FB1200FA179F /* QuestionView.swift in Sources */,
 				71E5CA572E33DFF700FA179F /* MainView.swift in Sources */,
 				71E5CA552E33DFF700FA179F /* LumiformApp.swift in Sources */,
