@@ -25,7 +25,10 @@ struct LumiformApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView(viewModel: formViewModel)
+            NavigationView {
+                MainView(viewModel: formViewModel)
+                    .navigationTitle(Text("Lumiform"))
+            }
         }
     }
 }
