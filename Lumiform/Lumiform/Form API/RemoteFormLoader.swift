@@ -48,15 +48,15 @@ extension RemoteFormItem {
     func toModel() -> FormItem {
         switch self {
         case let .page(page):
-            return .page(Page(type: page.type, title: page.title, items: page.items.toModels()))
+            return .page(Page(title: page.title, items: page.items.toModels()))
         case let .section(section):
-            return .section(Section(type: section.type, title: section.title, items: section.items.toModels()))
+            return .section(Section(title: section.title, items: section.items.toModels()))
         case let .question(question):
             switch question {
             case let .text(textQuestion):
-                return .question(.text(TextQuestion(type: textQuestion.type, title: textQuestion.title)))
+                return .question(.text(TextQuestion(title: textQuestion.title)))
             case let .image(imageQuestion):
-                return .question(.image(ImageQuestion(type: imageQuestion.type, title: imageQuestion.title, src: imageQuestion.src)))
+                return .question(.image(ImageQuestion(title: imageQuestion.title, sourceURL: imageQuestion.src)))
             }
         }
     }

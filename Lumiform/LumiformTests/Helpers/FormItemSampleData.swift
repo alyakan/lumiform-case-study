@@ -32,10 +32,10 @@ extension FormItem {
         }    
         """
 
-        let form: FormItem = .page(Page(type: "page", title: "Main Page", items: [
-            .section(Section(type: "section", title: "Introduction", items: [
-                .question(.text(TextQuestion(type: "text", title: "Welcome to the main page!"))),
-                .question(.image(ImageQuestion(type: "image", title: "Welcome Image", src: "https://robohash.org/280?&set=set4&size=400x400")))
+        let form: FormItem = .page(Page(title: "Main Page", items: [
+            .section(Section(title: "Introduction", items: [
+                .question(.text(TextQuestion(title: "Welcome to the main page!"))),
+                .question(.image(ImageQuestion(title: "Welcome Image", sourceURL: URL(string: "https://robohash.org/280?&set=set4&size=400x400")!)))
             ]))
         ]))
 
@@ -112,22 +112,22 @@ extension FormItem {
             } 
         """
 
-        let form = FormItem.page(Page(type: "page", title: "Main Page", items: [
-            FormItem.section(Section(type: "section", title: "Introduction", items: [
-                FormItem.question(Question.text(TextQuestion(type: "text", title: "Welcome to the main page!"))),
-                FormItem.question(Question.image(ImageQuestion(type: "image", title: "Welcome Image", src: "https://robohash.org/280?&set=set4&size=400x400")))
+        let form = FormItem.page(Page(title: "Main Page", items: [
+            FormItem.section(Section(title: "Introduction", items: [
+                FormItem.question(Question.text(TextQuestion(title: "Welcome to the main page!"))),
+                FormItem.question(Question.image(ImageQuestion(title: "Welcome Image", sourceURL: URL(string: "https://robohash.org/280?&set=set4&size=400x400")!)))
             ])),
-            FormItem.section(Section(type: "section", title: "Chapter 1", items: [
-                FormItem.question(Question.text(TextQuestion(type: "text", title: "This is the first chapter."))),
-                FormItem.section(Section(type: "section", title: "Subsection 1.1", items: [
-                    FormItem.question(Question.text(TextQuestion(type: "text", title: "This is a subsection under Chapter 1."))),
-                    FormItem.question(Lumiform.Question.image(ImageQuestion(type: "image", title: "Chapter 1 Image", src: "https://robohash.org/100?&set=set4&size=400x400")))
+            FormItem.section(Section(title: "Chapter 1", items: [
+                FormItem.question(Question.text(TextQuestion(title: "This is the first chapter."))),
+                FormItem.section(Section(title: "Subsection 1.1", items: [
+                    FormItem.question(Question.text(TextQuestion(title: "This is a subsection under Chapter 1."))),
+                    FormItem.question(Question.image(ImageQuestion(title: "Chapter 1 Image", sourceURL: URL(string: "https://robohash.org/100?&set=set4&size=400x400")!)))
                 ]))
             ])),
-            FormItem.page(Page(type: "page", title: "Second Page", items: [
-                FormItem.section(Section(type: "section", title: "Chapter 2", items: [
-                    FormItem.question(Question.text(TextQuestion(type: "text", title: "This is the second chapter."))),
-                    FormItem.question(Question.text(TextQuestion(type: "text", title: "What is the main topic of Chapter 2?")))
+            FormItem.page(Page(title: "Second Page", items: [
+                FormItem.section(Section(title: "Chapter 2", items: [
+                    FormItem.question(Question.text(TextQuestion(title: "This is the second chapter."))),
+                    FormItem.question(Question.text(TextQuestion(title: "What is the main topic of Chapter 2?")))
                 ]))
             ]))
         ]))

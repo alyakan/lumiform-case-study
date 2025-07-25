@@ -14,24 +14,20 @@ public enum FormItem: Equatable {
 }
 
 public struct Page: Equatable {
-    public let type: String
     public let title: String
     public let items: [FormItem]
 
-    public init(type: String, title: String, items: [FormItem]) {
-        self.type = type
+    public init(title: String, items: [FormItem]) {
         self.title = title
         self.items = items
     }
 }
 
 public struct Section: Equatable {
-    public let type: String
     public let title: String
     public let items: [FormItem]
 
-    public init(type: String, title: String, items: [FormItem]) {
-        self.type = type
+    public init(title: String, items: [FormItem]) {
         self.title = title
         self.items = items
     }
@@ -43,23 +39,19 @@ public enum Question: Equatable {
 }
 
 public struct TextQuestion: Equatable, Decodable {
-    public let type: String
     public let title: String
 
-    public init(type: String, title: String) {
-        self.type = type
+    public init(title: String) {
         self.title = title
     }
 }
 
 public struct ImageQuestion: Equatable, Decodable {
-    public let type: String
     public let title: String
-    public let src: String
+    public let sourceURL: URL
 
-    public init(type: String, title: String, src: String) {
-        self.type = type
+    public init(title: String, sourceURL: URL) {
         self.title = title
-        self.src = src
+        self.sourceURL = sourceURL
     }
 }
