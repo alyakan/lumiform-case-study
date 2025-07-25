@@ -5,12 +5,6 @@
 //  Created by Aly Yakan on 25/07/2025.
 //
 
-public protocol FormLoader {
-    typealias Result = Swift.Result<Form, Error>
-
-    func load(completion: @escaping (Result) -> Void)
-}
-
 public final class RemoteFormLoader: FormLoader {
     private let url: URL
     private let client: HTTPClient
