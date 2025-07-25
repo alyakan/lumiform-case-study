@@ -87,5 +87,5 @@ struct RemoteTextQuestion: Decodable {
 struct RemoteImageQuestion: Decodable {
     let type: String
     let title: String
-    let src: String
+    let src: URL
 }
