@@ -19,11 +19,19 @@ struct FormView: View {
     var body: some View {
         ScrollView {
             VStack {
-                if let rootItem = viewModel.rootItem {
+                if let error = viewModel.error {
+                    Text(error)
+                        .font(.title3)
+                    Button {
+                        viewModel.loadData()
+                    } label: {
+                        Text("Reload")
+                            .font(.headline)
+                    }
+                } else if let rootItem = viewModel.rootItem {
                     FormItemView(item: rootItem, sectionDepth: 0, isRootItem: true)
                 } else {
-                    Text("Empty Form")
-                        .font(.largeTitle)
+                    ProgressView()
                 }
             }
             .padding()
