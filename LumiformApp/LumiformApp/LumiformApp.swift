@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Lumiform
 
 @main
 struct LumiformApp: App {
