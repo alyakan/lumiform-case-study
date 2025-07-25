@@ -39,25 +39,78 @@ struct MainView: View {
     }
 
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            switch viewModel.rootItem {
-            case .page(let page):
+        ScrollView {
+            VStack {
+                if let rootItem = viewModel.rootItem {
+                    FormItemView(item: rootItem, isRootItem: true)
+                } else {
+                    Text("Empty Form")
+                        .font(.largeTitle)
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct FormItemView: View {
+    let item: FormItem
+    let isRootItem: Bool
+
+    init(item: FormItem, isRootItem: Bool = false) {
+        self.item = item
+        self.isRootItem = isRootItem
+    }
+
+    var body: some View {
+        switch item {
+        case .page(let page):
+            VStack(alignment: .leading, spacing: 16) {
+                if !isRootItem {
+                    Divider()
+                }
+
                 Text(page.title)
                     .font(.largeTitle)
-            case .section(let section):
-                Text("Section")
-            case .question(let question):
-                Text("Question")
-            case .none:
-                Text("Empty form")
-            case .some:
-                Text("Unknown form format")
+
+                ForEach(page.items.indices, id: \.self) { idx in
+                    FormItemView(item: page.items[idx])
+                }
             }
+        case .section(let section):
+            VStack(alignment: .leading, spacing: 12) {
+                Text(section.title)
+                    .font(.title)
+
+                ForEach(section.items.indices, id: \.self) { idx in
+                    FormItemView(item: section.items[idx])
+                }
+            }
+        case .question(let question):
+            QuestionView(question: question)
+        @unknown default:
+            Text("Unknown form item")
+                .font(.title)
         }
-        .padding()
+    }
+}
+
+struct QuestionView: View {
+    let question: Question
+
+    var body: some View {
+        switch question {
+        case .text(let textQuestion):
+            Text(textQuestion.title)
+                .font(.subheadline)
+        case .image(let imageQuestion):
+            // TODO: Display image
+            Text(imageQuestion.title)
+                .font(.subheadline)
+        @unknown default:
+            Text("Unknown question format")
+                .font(.subheadline)
+        }
     }
 }
 
