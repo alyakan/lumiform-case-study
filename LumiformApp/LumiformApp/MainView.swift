@@ -42,7 +42,7 @@ struct MainView: View {
         ScrollView {
             VStack {
                 if let rootItem = viewModel.rootItem {
-                    FormItemView(item: rootItem, isRootItem: true)
+                    FormItemView(item: rootItem, sectionDepth: 0, isRootItem: true)
                 } else {
                     Text("Empty Form")
                         .font(.largeTitle)

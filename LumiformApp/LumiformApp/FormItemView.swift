@@ -10,10 +10,12 @@ import Lumiform
 
 struct FormItemView: View {
     let item: FormItem
+    let sectionDepth: Int
     let isRootItem: Bool
 
-    init(item: FormItem, isRootItem: Bool = false) {
+    init(item: FormItem, sectionDepth: Int, isRootItem: Bool = false) {
         self.item = item
+        self.sectionDepth = sectionDepth
         self.isRootItem = isRootItem
     }
 
@@ -26,19 +28,21 @@ struct FormItemView: View {
                 }
 
                 Text(page.title)
-                    .font(.largeTitle)
+                    .font(HierarchyFont.pageFont())
 
                 ForEach(page.items.indices, id: \.self) { idx in
-                    FormItemView(item: page.items[idx])
+                    FormItemView(item: page.items[idx], sectionDepth: sectionDepth)
                 }
             }
         case .section(let section):
             VStack(alignment: .leading, spacing: 12) {
                 Text(section.title)
-                    .font(.title)
+                    .font(HierarchyFont.sectionFont(depth: sectionDepth))
 
                 ForEach(section.items.indices, id: \.self) { idx in
-                    FormItemView(item: section.items[idx])
+                    let child = section.items[idx]
+                    let nextSectionDepth = child.isSection ? sectionDepth + 1 : sectionDepth
+                    FormItemView(item: child, sectionDepth: nextSectionDepth)
                 }
             }
         case .question(let question):
@@ -46,6 +50,18 @@ struct FormItemView: View {
         @unknown default:
             Text("Unknown form item")
                 .font(.title)
+        }
+    }
+}
+
+extension FormItem {
+
+    var isSection: Bool {
+        switch self {
+        case .section:
+            true
+        default:
+            false
         }
     }
 }
