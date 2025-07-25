@@ -5,9 +5,13 @@
 //  Created by Aly Yakan on 25/07/2025.
 //
 
-public final class RemoteFormLoader {
-    public typealias Result = Swift.Result<Form, Swift.Error>
+public protocol FormLoader {
+    typealias Result = Swift.Result<Form, Error>
 
+    func load(completion: @escaping (Result) -> Void)
+}
+
+public final class RemoteFormLoader: FormLoader {
     private let url: URL
     private let client: HTTPClient
 
@@ -20,7 +24,7 @@ public final class RemoteFormLoader {
         self.client = client
     }
 
-    public func load(completion: @escaping (Result) -> Void) {
+    public func load(completion: @escaping (FormLoader.Result) -> Void) {
         client.get(from: url) { result in
             switch result {
             case let .success((data, response)):
