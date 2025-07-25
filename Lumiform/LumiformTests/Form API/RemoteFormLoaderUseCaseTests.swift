@@ -54,9 +54,19 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         })
     }
 
-    func test_load_deliversFormOn200HTTPResponseWithValidJSON() {
+    func test_load_deliversFormOn200HTTPResponseWithSimpleValidJSON() {
         let (sut, client) = makeSUT()
-        let dataToReturn = FormItem.sampleData()
+        let dataToReturn = FormItem.simpleSampleData()
+        let expectedForm = Form(rootPage: dataToReturn.item)
+
+        expect(sut, toCompleteWith: .success(expectedForm), when: {
+            client.complete(withStatusCode: 200, data: dataToReturn.data)
+        })
+    }
+
+    func test_load_deliversFormOn200HTTPResponseWithRecursiveValidJSON() {
+        let (sut, client) = makeSUT()
+        let dataToReturn = FormItem.recursiveSampleData()
         let expectedForm = Form(rootPage: dataToReturn.item)
 
         expect(sut, toCompleteWith: .success(expectedForm), when: {
@@ -112,68 +122,5 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
     private func makeItemsJSON(_ items: [String: Any]) -> Data {
         let itemsJSON = ["items": items]
         return try! JSONSerialization.data(withJSONObject: itemsJSON)
-    }
-
-    final class HTTPClientSpy: HTTPClient {
-        private var receivedMessages: [(url: URL, completion: (HTTPClient.Result) -> Void)] = []
-
-        var requestedURLs: [URL] {
-            receivedMessages.map(\.url)
-        }
-
-        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
-            receivedMessages.append((url, completion))
-        }
-
-        func complete(with error: Error, at index: Int = 0) {
-            receivedMessages[index].completion(.failure(error))
-        }
-
-        func complete(withStatusCode statusCode: Int, data: Data, at index: Int = 0) {
-            let response = HTTPURLResponse(
-                url: receivedMessages[index].url,
-                statusCode: statusCode,
-                httpVersion: nil,
-                headerFields: nil
-            )!
-
-            receivedMessages[index].completion(.success((data, response)))
-        }
-    }
-}
-
-extension FormItem {
-    static func sampleData() -> (item: FormItem, data: Data) {
-        let jsonString = """
-        {
-          "type": "page",
-          "title": "Main Page",
-          "items": [
-            {
-              "type": "section",
-              "title": "Introduction",
-              "items": [
-                {
-                  "type": "text",
-                  "title": "Welcome to the main page!"
-                },
-                {
-                  "type": "image",
-                  "src": "https://robohash.org/280?&set=set4&size=400x400",
-                  "title": "Welcome Image"
-                }
-              ]
-            }]
-        }    
-        """
-
-        let form: FormItem = .page(Page(type: "page", title: "Main Page", items: [
-            .section(Section(type: "section", title: "Introduction", items: [
-                .question(.text(TextQuestion(type: "text", title: "Welcome to the main page!"))),
-                .question(.image(ImageQuestion(type: "image", title: "Welcome Image", src: "https://robohash.org/280?&set=set4&size=400x400")))
-            ]))
-        ]))
-
-        return (form, Data(jsonString.utf8))
     }
 }
