@@ -33,13 +33,6 @@
 			remoteGlobalIDString = 71C51EDB2E32649A00AF92C6;
 			remoteInfo = Lumiform;
 		};
-		71E5CA662E33DFF800FA179F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 71E5CA622E33DFF800FA179F /* LumiformApp.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 71E5CA512E33DFF700FA179F;
-			remoteInfo = LumiformApp;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -60,7 +53,6 @@
 		71C51EF82E3264B500AF92C6 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		71C51EFE2E3264C400AF92C6 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		71C51EFF2E3264C400AF92C6 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
-		71E5CA622E33DFF800FA179F /* LumiformApp.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LumiformApp.xcodeproj; path = ../LumiformApp/LumiformApp.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +87,6 @@
 		71C51ED22E32649A00AF92C6 = {
 			isa = PBXGroup;
 			children = (
-				71E5CA622E33DFF800FA179F /* LumiformApp.xcodeproj */,
 				71C51EDE2E32649A00AF92C6 /* Lumiform */,
 				71C51EE82E32649B00AF92C6 /* LumiformTests */,
 				71C51EDD2E32649A00AF92C6 /* Products */,
@@ -160,14 +151,6 @@
 				71C51EFF2E3264C400AF92C6 /* URLSessionHTTPClient.swift */,
 			);
 			path = "Form API";
-			sourceTree = "<group>";
-		};
-		71E5CA632E33DFF800FA179F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				71E5CA672E33DFF800FA179F /* LumiformApp.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,12 +232,6 @@
 			mainGroup = 71C51ED22E32649A00AF92C6;
 			productRefGroup = 71C51EDD2E32649A00AF92C6 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 71E5CA632E33DFF800FA179F /* Products */;
-					ProjectRef = 71E5CA622E33DFF800FA179F /* LumiformApp.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				71C51EDB2E32649A00AF92C6 /* Lumiform */,
@@ -262,16 +239,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		71E5CA672E33DFF800FA179F /* LumiformApp.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = LumiformApp.app;
-			remoteRef = 71E5CA662E33DFF800FA179F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		71C51EDA2E32649A00AF92C6 /* Resources */ = {
