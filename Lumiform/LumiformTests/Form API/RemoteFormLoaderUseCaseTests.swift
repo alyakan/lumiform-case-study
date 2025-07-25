@@ -56,8 +56,8 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
 
     func test_load_deliversFormOn200HTTPResponseWithValidJSON() {
         let (sut, client) = makeSUT()
-        let dataToReturn = RemoteFormLoader.FormItem.sampleData()
-        let expectedForm = RemoteFormLoader.Form(rootPage: dataToReturn.item)
+        let dataToReturn = FormItem.sampleData()
+        let expectedForm = Form(rootPage: dataToReturn.item)
 
         expect(sut, toCompleteWith: .success(expectedForm), when: {
             client.complete(withStatusCode: 200, data: dataToReturn.data)
@@ -142,8 +142,8 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
     }
 }
 
-extension RemoteFormLoader.FormItem {
-    static func sampleData() -> (item: RemoteFormLoader.FormItem, data: Data) {
+extension FormItem {
+    static func sampleData() -> (item: FormItem, data: Data) {
         let jsonString = """
         {
           "type": "page",
@@ -167,10 +167,10 @@ extension RemoteFormLoader.FormItem {
         }    
         """
 
-        let form: RemoteFormLoader.FormItem = .page(RemoteFormLoader.Page(type: "page", title: "Main Page", items: [
-            .section(RemoteFormLoader.Section(type: "section", title: "Introduction", items: [
-                .question(.text(RemoteFormLoader.TextQuestion(type: "text", title: "Welcome to the main page!"))),
-                .question(.image(RemoteFormLoader.ImageQuestion(type: "image", title: "Welcome Image", src: "https://robohash.org/280?&set=set4&size=400x400")))
+        let form: FormItem = .page(Page(type: "page", title: "Main Page", items: [
+            .section(Section(type: "section", title: "Introduction", items: [
+                .question(.text(TextQuestion(type: "text", title: "Welcome to the main page!"))),
+                .question(.image(ImageQuestion(type: "image", title: "Welcome Image", src: "https://robohash.org/280?&set=set4&size=400x400")))
             ]))
         ]))
 

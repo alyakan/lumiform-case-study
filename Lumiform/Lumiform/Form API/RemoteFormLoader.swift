@@ -28,14 +28,38 @@ public final class RemoteFormLoader {
                     return completion(.failure(Error.invalidData))
                 }
 
-                guard let formItem = try? JSONDecoder().decode(FormItem.self, from: data) else {
+                guard let formItem = try? JSONDecoder().decode(RemoteFormItem.self, from: data) else {
                     return completion(.failure(Error.invalidData))
                 }
 
-                completion(.success(Form(rootPage: formItem)))
+                completion(.success(Form(rootPage: formItem.toModel())))
             case .failure:
                 completion(.failure(Error.connectivity))
             }
         }
+    }
+}
+
+extension RemoteFormItem {
+    func toModel() -> FormItem {
+        switch self {
+        case let .page(page):
+            return .page(Page(type: page.type, title: page.title, items: page.items.toModels()))
+        case let .section(section):
+            return .section(Section(type: section.type, title: section.title, items: section.items.toModels()))
+        case let .question(question):
+            switch question {
+            case let .text(textQuestion):
+                return .question(.text(TextQuestion(type: textQuestion.type, title: textQuestion.title)))
+            case let .image(imageQuestion):
+                return .question(.image(ImageQuestion(type: imageQuestion.type, title: imageQuestion.title, src: imageQuestion.src)))
+            }
+        }
+    }
+}
+
+extension Array where Element == RemoteFormItem {
+    func toModels() -> [FormItem] {
+        map { $0.toModel() }
     }
 }
