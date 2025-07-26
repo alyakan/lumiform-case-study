@@ -29,6 +29,7 @@ final class LocalFormLoader {
     enum Error: Swift.Error {
         case existingCacheDeleteFailed
         case instanceDeinitialized
+        case insertionFailed
     }
 
     init(store: FormStore, currentDate: @escaping () -> Date) {
@@ -42,8 +43,13 @@ final class LocalFormLoader {
             case .success:
                 guard let self else { return completion(.failure(.instanceDeinitialized)) }
 
-                store.insert(form, timestamp: currentDate()) { _ in
-                    completion(.success(()))
+                store.insert(form, timestamp: currentDate()) { result in
+                    switch result {
+                    case .success:
+                        completion(.success(()))
+                    case .failure:
+                        completion(.failure(Error.insertionFailed))
+                    }
                 }
             case .failure:
                 completion(.failure(.existingCacheDeleteFailed))
@@ -106,6 +112,25 @@ class CacheFormUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    func test_save_completesWithErrorOnInsertionError() {
+        let (sut, store) = makeSUT()
+        let expectedError = LocalFormLoader.Error.insertionFailed
+
+        let exp = expectation(description: "Wait for completion")
+        sut.save(simpleForm()) { result in
+            switch result {
+            case .success:
+                XCTFail("Expected to fail with \(expectedError), but got \(result)")
+            case .failure(let receivedError):
+                XCTAssertEqual(receivedError, expectedError)
+            }
+            exp.fulfill()
+        }
+        store.completeDeletionSuccessfully()
+        store.completeInsertion(with: anyNSError())
+        wait(for: [exp], timeout: 1.0)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
@@ -152,5 +177,9 @@ final class FormStoreSpy: FormStore {
 
     func completeDeletionSuccessfully(at index: Int = 0) {
         deletionCompletions[index](.success(()))
+    }
+
+    func completeInsertion(with error: Error, at index: Int = 0) {
+        insertionCompletions[index](.failure(error))
     }
 }
