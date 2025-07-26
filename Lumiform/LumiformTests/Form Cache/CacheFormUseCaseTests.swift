@@ -42,7 +42,9 @@ final class LocalFormLoader {
 
             switch result {
             case .success:
-                store.insert(form, timestamp: currentDate()) { result in
+                store.insert(form, timestamp: currentDate()) { [weak self] result in
+                    guard self != nil else { return }
+
                     switch result {
                     case .success:
                         completion(.success(()))
@@ -132,6 +134,22 @@ class CacheFormUseCaseTests: XCTestCase {
         
         sut = nil
         store.completeDeletion(with: anyNSError())
+
+        XCTAssertTrue(receivedResults.isEmpty, "Expected no results, but got: \(receivedResults)")
+    }
+
+    func test_save_doesNotDeliverInsertionErrorAfterSUTDeallocation() {
+        let store = FormStoreSpy()
+        var sut: LocalFormLoader? = LocalFormLoader(store: store, currentDate: Date.init)
+
+        var receivedResults: [LocalFormLoader.SaveResult] = []
+        sut?.save(simpleForm()) { result in
+            receivedResults.append(result)
+        }
+
+        store.completeDeletionSuccessfully()
+        sut = nil
+        store.completeInsertion(with: anyNSError())
 
         XCTAssertTrue(receivedResults.isEmpty, "Expected no results, but got: \(receivedResults)")
     }
