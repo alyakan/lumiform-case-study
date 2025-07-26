@@ -8,61 +8,6 @@
 import XCTest
 import Lumiform
 
-protocol FormStore {
-    typealias DeletionResult = Result<Void, Error>
-    typealias DeletionCompletion = (DeletionResult) -> Void
-
-    typealias InsertionResult = Result<Void, Error>
-    typealias InsertionCompletion = (InsertionResult) -> Void
-
-    func deleteCachedForm(completion: @escaping DeletionCompletion)
-
-    func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion)
-}
-
-final class LocalFormLoader {
-    typealias SaveResult = Result<Void, Error>
-
-    private let store: FormStore
-    private let currentDate: () -> Date
-
-    enum Error: Swift.Error {
-        case existingCacheDeleteFailed
-        case insertionFailed
-    }
-
-    init(store: FormStore, currentDate: @escaping () -> Date) {
-        self.store = store
-        self.currentDate = currentDate
-    }
-
-    func save(_ form: Form, completion: @escaping (SaveResult) -> Void) {
-        store.deleteCachedForm { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case .success:
-                cache(form, completion: completion)
-            case .failure:
-                completion(.failure(.existingCacheDeleteFailed))
-            }
-        }
-    }
-
-    private func cache(_ form: Form, completion: @escaping (SaveResult) -> Void) {
-        store.insert(form, timestamp: currentDate()) { [weak self] result in
-            guard self != nil else { return }
-
-            switch result {
-            case .success:
-                completion(.success(()))
-            case .failure:
-                completion(.failure(Error.insertionFailed))
-            }
-        }
-    }
-}
-
 class CacheFormUseCaseTests: XCTestCase {
 
     func test_init_doesNotMessageStoreUponCreation() {
@@ -216,42 +161,5 @@ class CacheFormUseCaseTests: XCTestCase {
 
     private func simpleForm() -> Form {
         Form(rootPage: FormItem.simpleSampleData().item)
-    }
-}
-
-final class FormStoreSpy: FormStore {
-    private var deletionCompletions: [DeletionCompletion] = []
-    private var insertionCompletions: [InsertionCompletion] = []
-    private(set) var receivedMessages = [Message]()
-
-    enum Message: Equatable {
-        case deleteCachedForm
-        case insert(Form, Date)
-    }
-
-    func deleteCachedForm(completion: @escaping FormStore.DeletionCompletion) {
-        receivedMessages.append(.deleteCachedForm)
-        deletionCompletions.append(completion)
-    }
-
-    func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion) {
-        receivedMessages.append(.insert(form, timestamp))
-        insertionCompletions.append(completion)
-    }
-
-    func completeDeletion(with error: Error, at index: Int = 0) {
-        deletionCompletions[index](.failure(error))
-    }
-
-    func completeDeletionSuccessfully(at index: Int = 0) {
-        deletionCompletions[index](.success(()))
-    }
-
-    func completeInsertion(with error: Error, at index: Int = 0) {
-        insertionCompletions[index](.failure(error))
-    }
-
-    func completeInsertionSuccessfully(at index: Int = 0) {
-        insertionCompletions[index](.success(()))
     }
 }
