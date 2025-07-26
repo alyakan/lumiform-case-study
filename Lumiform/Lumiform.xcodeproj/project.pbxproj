@@ -23,6 +23,7 @@
 		71C51EFD2E3264B500AF92C6 /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C51EF82E3264B500AF92C6 /* XCTestCase+MemoryLeakTracking.swift */; };
 		71C51F012E3264C400AF92C6 /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C51EFE2E3264C400AF92C6 /* HTTPClient.swift */; };
 		71C51F022E3264C400AF92C6 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C51EFF2E3264C400AF92C6 /* URLSessionHTTPClient.swift */; };
+		71E5CA872E35578D00FA179F /* LocalFormLoaderUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA862E35578D00FA179F /* LocalFormLoaderUseCaseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		71C51EF82E3264B500AF92C6 /* XCTestCase+MemoryLeakTracking.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+MemoryLeakTracking.swift"; sourceTree = "<group>"; };
 		71C51EFE2E3264C400AF92C6 /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPClient.swift; sourceTree = "<group>"; };
 		71C51EFF2E3264C400AF92C6 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
+		71E5CA862E35578D00FA179F /* LocalFormLoaderUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFormLoaderUseCaseTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 		71C51EE82E32649B00AF92C6 /* LumiformTests */ = {
 			isa = PBXGroup;
 			children = (
+				71E5CA852E35544700FA179F /* Form Cache */,
 				71C51EF52E3264B500AF92C6 /* Form API */,
 				71C51EF92E3264B500AF92C6 /* Helpers */,
 			);
@@ -151,6 +154,14 @@
 				71C51EFF2E3264C400AF92C6 /* URLSessionHTTPClient.swift */,
 			);
 			path = "Form API";
+			sourceTree = "<group>";
+		};
+		71E5CA852E35544700FA179F /* Form Cache */ = {
+			isa = PBXGroup;
+			children = (
+				71E5CA862E35578D00FA179F /* LocalFormLoaderUseCaseTests.swift */,
+			);
+			path = "Form Cache";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -278,6 +289,7 @@
 			files = (
 				71C51EFB2E3264B500AF92C6 /* Common.swift in Sources */,
 				71C51EFD2E3264B500AF92C6 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
+				71E5CA872E35578D00FA179F /* LocalFormLoaderUseCaseTests.swift in Sources */,
 				71C51EFC2E3264B500AF92C6 /* URLProtocolStub.swift in Sources */,
 				71C51EFA2E3264B500AF92C6 /* URLSessionHTTPClientTests.swift in Sources */,
 				7180CBAA2E33B5AA00A7883E /* FormItemSampleData.swift in Sources */,
