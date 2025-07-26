@@ -42,18 +42,22 @@ final class LocalFormLoader {
 
             switch result {
             case .success:
-                store.insert(form, timestamp: currentDate()) { [weak self] result in
-                    guard self != nil else { return }
-
-                    switch result {
-                    case .success:
-                        completion(.success(()))
-                    case .failure:
-                        completion(.failure(Error.insertionFailed))
-                    }
-                }
+                cache(form, completion: completion)
             case .failure:
                 completion(.failure(.existingCacheDeleteFailed))
+            }
+        }
+    }
+
+    private func cache(_ form: Form, completion: @escaping (SaveResult) -> Void) {
+        store.insert(form, timestamp: currentDate()) { [weak self] result in
+            guard self != nil else { return }
+
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure:
+                completion(.failure(Error.insertionFailed))
             }
         }
     }
