@@ -20,7 +20,7 @@ protocol FormStore {
     func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion)
 }
 
-final class LocalFormCache {
+final class LocalFormLoader {
     typealias SaveResult = Result<Void, Error>
 
     private let store: FormStore
@@ -94,10 +94,10 @@ class CacheFormUseCaseTests: XCTestCase {
         currentDate: @escaping () -> Date = Date.init,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) -> (LocalFormCache, FormStoreSpy) {
+    ) -> (LocalFormLoader, FormStoreSpy) {
 
         let store = FormStoreSpy()
-        let sut = LocalFormCache(store: store, currentDate: currentDate)
+        let sut = LocalFormLoader(store: store, currentDate: currentDate)
         trackForMemoryLeaks(store)
         trackForMemoryLeaks(sut)
         return (sut, store)
@@ -106,33 +106,33 @@ class CacheFormUseCaseTests: XCTestCase {
     private func simpleForm() -> Form {
         Form(rootPage: FormItem.simpleSampleData().item)
     }
+}
 
-    private class FormStoreSpy: FormStore {
-        private var deletionCompletions: [DeletionCompletion] = []
-        private var insertionCompletions: [InsertionCompletion] = []
-        private(set) var receivedMessages = [Message]()
+final class FormStoreSpy: FormStore {
+    private var deletionCompletions: [DeletionCompletion] = []
+    private var insertionCompletions: [InsertionCompletion] = []
+    private(set) var receivedMessages = [Message]()
 
-        enum Message: Equatable {
-            case deleteCachedForm
-            case insert(Form, Date)
-        }
+    enum Message: Equatable {
+        case deleteCachedForm
+        case insert(Form, Date)
+    }
 
-        func deleteCachedForm(completion: @escaping FormStore.DeletionCompletion) {
-            receivedMessages.append(.deleteCachedForm)
-            deletionCompletions.append(completion)
-        }
+    func deleteCachedForm(completion: @escaping FormStore.DeletionCompletion) {
+        receivedMessages.append(.deleteCachedForm)
+        deletionCompletions.append(completion)
+    }
 
-        func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion) {
-            receivedMessages.append(.insert(form, timestamp))
-            insertionCompletions.append(completion)
-        }
+    func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion) {
+        receivedMessages.append(.insert(form, timestamp))
+        insertionCompletions.append(completion)
+    }
 
-        func completeDeletion(with error: Error, at index: Int = 0) {
-            deletionCompletions[index](.failure(error))
-        }
+    func completeDeletion(with error: Error, at index: Int = 0) {
+        deletionCompletions[index](.failure(error))
+    }
 
-        func completeDeletionSuccessfully(at index: Int = 0) {
-            deletionCompletions[index](.success(()))
-        }
+    func completeDeletionSuccessfully(at index: Int = 0) {
+        deletionCompletions[index](.success(()))
     }
 }
