@@ -88,6 +88,24 @@ class CacheFormUseCaseTests: XCTestCase {
         XCTAssertEqual(store.receivedMessages, [.deleteCachedForm, .insert(formToInsert, timestamp)])
     }
 
+    func test_save_completesWithErrorOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let expectedError = LocalFormLoader.Error.existingCacheDeleteFailed
+
+        let exp = expectation(description: "Wait for completion")
+        sut.save(simpleForm()) { result in
+            switch result {
+            case .success:
+                XCTFail("Expected to fail with \(expectedError), but got \(result)")
+            case .failure(let receivedError):
+                XCTAssertEqual(receivedError, expectedError)
+            }
+            exp.fulfill()
+        }
+        store.completeDeletion(with: anyNSError())
+        wait(for: [exp], timeout: 1.0)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
