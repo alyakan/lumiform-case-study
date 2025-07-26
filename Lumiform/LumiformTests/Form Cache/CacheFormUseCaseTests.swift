@@ -12,19 +12,42 @@ protocol FormStore {
     typealias DeletionResult = Result<Void, Error>
     typealias DeletionCompletion = (DeletionResult) -> Void
 
+    typealias InsertionResult = Result<Void, Error>
+    typealias InsertionCompletion = (InsertionResult) -> Void
+
     func deleteCachedForm(completion: @escaping DeletionCompletion)
+
+    func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion)
 }
 
 final class LocalFormCache {
-    private let store: FormStore
+    typealias SaveResult = Result<Void, Error>
 
-    init(store: FormStore) {
-        self.store = store
+    private let store: FormStore
+    private let currentDate: () -> Date
+
+    enum Error: Swift.Error {
+        case existingCacheDeleteFailed
+        case instanceDeinitialized
     }
 
-    func save(_ form: Form, completion: @escaping () -> Void) {
-        store.deleteCachedForm { _ in
-            completion()
+    init(store: FormStore, currentDate: @escaping () -> Date) {
+        self.store = store
+        self.currentDate = currentDate
+    }
+
+    func save(_ form: Form, completion: @escaping (SaveResult) -> Void) {
+        store.deleteCachedForm { [weak self] result in
+            switch result {
+            case .success:
+                guard let self else { return completion(.failure(.instanceDeinitialized)) }
+
+                store.insert(form, timestamp: currentDate()) { _ in
+                    completion(.success(()))
+                }
+            case .failure:
+                completion(.failure(.existingCacheDeleteFailed))
+            }
         }
     }
 }
@@ -40,7 +63,7 @@ class CacheFormUseCaseTests: XCTestCase {
     func test_save_requestsCacheDeletion() {
         let (sut, store) = makeSUT()
 
-        sut.save(simpleForm()) { }
+        sut.save(simpleForm()) { _ in }
 
         XCTAssertEqual(store.receivedMessages, [.deleteCachedForm])
     }
@@ -48,19 +71,33 @@ class CacheFormUseCaseTests: XCTestCase {
     func test_save_doesNotRequestCacheInsertionOnDeletionError() {
         let (sut, store) = makeSUT()
 
-        let exp = expectation(description: "Wait for completion")
-        sut.save(simpleForm()) {
-            exp.fulfill()
-        }
+        sut.save(simpleForm()) { _ in }
         store.completeDeletion(with: anyNSError())
-        wait(for: [exp], timeout: 1.0)
+
+        XCTAssertEqual(store.receivedMessages, [.deleteCachedForm])
+    }
+
+    func test_save_requestsCacheInsertionOnDeletionSuccess() {
+        let timestamp = Date()
+        let formToInsert = simpleForm()
+        let (sut, store) = makeSUT(currentDate: { timestamp })
+
+        sut.save(formToInsert) { _ in }
+        store.completeDeletionSuccessfully()
+
+        XCTAssertEqual(store.receivedMessages, [.deleteCachedForm, .insert(formToInsert, timestamp)])
     }
 
     // MARK: - Helpers
 
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (LocalFormCache, FormStoreSpy) {
+    private func makeSUT(
+        currentDate: @escaping () -> Date = Date.init,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> (LocalFormCache, FormStoreSpy) {
+
         let store = FormStoreSpy()
-        let sut = LocalFormCache(store: store)
+        let sut = LocalFormCache(store: store, currentDate: currentDate)
         trackForMemoryLeaks(store)
         trackForMemoryLeaks(sut)
         return (sut, store)
@@ -72,19 +109,30 @@ class CacheFormUseCaseTests: XCTestCase {
 
     private class FormStoreSpy: FormStore {
         private var deletionCompletions: [DeletionCompletion] = []
+        private var insertionCompletions: [InsertionCompletion] = []
         private(set) var receivedMessages = [Message]()
 
-        enum Message {
+        enum Message: Equatable {
             case deleteCachedForm
+            case insert(Form, Date)
         }
 
         func deleteCachedForm(completion: @escaping FormStore.DeletionCompletion) {
-            deletionCompletions.append(completion)
             receivedMessages.append(.deleteCachedForm)
+            deletionCompletions.append(completion)
+        }
+
+        func insert(_ form: Form, timestamp: Date, completion: @escaping InsertionCompletion) {
+            receivedMessages.append(.insert(form, timestamp))
+            insertionCompletions.append(completion)
         }
 
         func completeDeletion(with error: Error, at index: Int = 0) {
             deletionCompletions[index](.failure(error))
+        }
+
+        func completeDeletionSuccessfully(at index: Int = 0) {
+            deletionCompletions[index](.success(()))
         }
     }
 }
