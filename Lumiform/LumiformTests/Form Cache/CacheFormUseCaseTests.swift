@@ -28,7 +28,6 @@ final class LocalFormLoader {
 
     enum Error: Swift.Error {
         case existingCacheDeleteFailed
-        case instanceDeinitialized
         case insertionFailed
     }
 
@@ -39,10 +38,10 @@ final class LocalFormLoader {
 
     func save(_ form: Form, completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedForm { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success:
-                guard let self else { return completion(.failure(.instanceDeinitialized)) }
-
                 store.insert(form, timestamp: currentDate()) { result in
                     switch result {
                     case .success:
@@ -120,6 +119,21 @@ class CacheFormUseCaseTests: XCTestCase {
             store.completeDeletionSuccessfully()
             store.completeInsertionSuccessfully()
         })
+    }
+
+    func test_save_doesNotDeliverDeletionErrorAfterSUTDeallocation() {
+        let store = FormStoreSpy()
+        var sut: LocalFormLoader? = LocalFormLoader(store: store, currentDate: Date.init)
+
+        var receivedResults: [LocalFormLoader.SaveResult] = []
+        sut?.save(simpleForm()) { result in
+            receivedResults.append(result)
+        }
+        
+        sut = nil
+        store.completeDeletion(with: anyNSError())
+
+        XCTAssertTrue(receivedResults.isEmpty, "Expected no results, but got: \(receivedResults)")
     }
 
     // MARK: - Helpers
