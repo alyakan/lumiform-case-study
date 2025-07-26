@@ -131,6 +131,24 @@ class CacheFormUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    func test_save_succeedsOnSuccessfulCacheInsertion() {
+        let (sut, store) = makeSUT()
+
+        let exp = expectation(description: "Wait for completion")
+        sut.save(simpleForm()) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let receivedError):
+                XCTFail("Expected to succeed, but got \(receivedError)")
+            }
+            exp.fulfill()
+        }
+        store.completeDeletionSuccessfully()
+        store.completeInsertionSuccessfully()
+        wait(for: [exp], timeout: 1.0)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
@@ -181,5 +199,9 @@ final class FormStoreSpy: FormStore {
 
     func completeInsertion(with error: Error, at index: Int = 0) {
         insertionCompletions[index](.failure(error))
+    }
+
+    func completeInsertionSuccessfully(at index: Int = 0) {
+        insertionCompletions[index](.success(()))
     }
 }
