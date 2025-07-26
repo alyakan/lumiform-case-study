@@ -98,55 +98,28 @@ class CacheFormUseCaseTests: XCTestCase {
         let (sut, store) = makeSUT()
         let expectedError = LocalFormLoader.Error.existingCacheDeleteFailed
 
-        let exp = expectation(description: "Wait for completion")
-        sut.save(simpleForm()) { result in
-            switch result {
-            case .success:
-                XCTFail("Expected to fail with \(expectedError), but got \(result)")
-            case .failure(let receivedError):
-                XCTAssertEqual(receivedError, expectedError)
-            }
-            exp.fulfill()
-        }
-        store.completeDeletion(with: anyNSError())
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWithError: expectedError, when: {
+            store.completeDeletion(with: anyNSError())
+        })
     }
 
     func test_save_completesWithErrorOnInsertionError() {
         let (sut, store) = makeSUT()
         let expectedError = LocalFormLoader.Error.insertionFailed
 
-        let exp = expectation(description: "Wait for completion")
-        sut.save(simpleForm()) { result in
-            switch result {
-            case .success:
-                XCTFail("Expected to fail with \(expectedError), but got \(result)")
-            case .failure(let receivedError):
-                XCTAssertEqual(receivedError, expectedError)
-            }
-            exp.fulfill()
-        }
-        store.completeDeletionSuccessfully()
-        store.completeInsertion(with: anyNSError())
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toCompleteWithError: expectedError, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertion(with: anyNSError())
+        })
     }
 
     func test_save_succeedsOnSuccessfulCacheInsertion() {
         let (sut, store) = makeSUT()
 
-        let exp = expectation(description: "Wait for completion")
-        sut.save(simpleForm()) { result in
-            switch result {
-            case .success:
-                break
-            case .failure(let receivedError):
-                XCTFail("Expected to succeed, but got \(receivedError)")
-            }
-            exp.fulfill()
-        }
-        store.completeDeletionSuccessfully()
-        store.completeInsertionSuccessfully()
-        wait(for: [exp], timeout: 1.0)
+        expectSuccessfulCompletionFor(sut, when: {
+            store.completeDeletionSuccessfully()
+            store.completeInsertionSuccessfully()
+        })
     }
 
     // MARK: - Helpers
@@ -162,6 +135,47 @@ class CacheFormUseCaseTests: XCTestCase {
         trackForMemoryLeaks(store)
         trackForMemoryLeaks(sut)
         return (sut, store)
+    }
+
+    private func expect(
+        _ sut: LocalFormLoader,
+        toCompleteWithError expectedError: LocalFormLoader.Error,
+        when action: () -> Void,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+
+        let exp = expectation(description: "Wait for completion")
+        sut.save(simpleForm()) { result in
+            switch result {
+            case .success:
+                XCTFail("Expected to fail with \(expectedError), but got \(result)")
+            case .failure(let receivedError):
+                XCTAssertEqual(receivedError, expectedError)
+            }
+            exp.fulfill()
+        }
+
+        action()
+
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    func expectSuccessfulCompletionFor(_ sut: LocalFormLoader, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        sut.save(simpleForm()) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let receivedError):
+                XCTFail("Expected to succeed, but got \(receivedError)")
+            }
+            exp.fulfill()
+        }
+
+        action()
+
+        wait(for: [exp], timeout: 1.0)
     }
 
     private func simpleForm() -> Form {
