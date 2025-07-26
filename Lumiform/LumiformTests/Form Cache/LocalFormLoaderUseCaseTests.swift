@@ -7,10 +7,6 @@
 
 import XCTest
 
-final class LocalFormLoader {
-    init(store: Any) {}
-}
-
 class LocalFormLoaderUseCaseTests: XCTestCase {
 
     func test_init_doesNotMessageStoreUponCreation() {
@@ -23,13 +19,9 @@ class LocalFormLoaderUseCaseTests: XCTestCase {
 
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (LocalFormLoader, FormStoreSpy) {
         let store = FormStoreSpy()
-        let sut = LocalFormLoader(store: store)
+        let sut = LocalFormLoader(store: store, currentDate: Date.init)
         trackForMemoryLeaks(store)
         trackForMemoryLeaks(sut)
         return (sut, store)
-    }
-
-    private class FormStoreSpy {
-        private(set) var receivedMessages = [Any]()
     }
 }
