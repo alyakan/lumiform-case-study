@@ -109,7 +109,7 @@ class CacheFormUseCaseTests: XCTestCase {
         currentDate: @escaping () -> Date = Date.init,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) -> (LocalFormLoader, FormStoreSpy) {
+    ) -> (FormCacher, FormStoreSpy) {
 
         let store = FormStoreSpy()
         let sut = LocalFormLoader(store: store, currentDate: currentDate)
@@ -119,7 +119,7 @@ class CacheFormUseCaseTests: XCTestCase {
     }
 
     private func expect(
-        _ sut: LocalFormLoader,
+        _ sut: FormCacher,
         toCompleteWithError expectedError: LocalFormLoader.Error,
         when action: () -> Void,
         file: StaticString = #file,
@@ -129,10 +129,10 @@ class CacheFormUseCaseTests: XCTestCase {
         let exp = expectation(description: "Wait for completion")
         sut.save(simpleForm()) { result in
             switch result {
-            case .success:
-                XCTFail("Expected to fail with \(expectedError), but got \(result)")
-            case .failure(let receivedError):
+            case .failure(let receivedError as LocalFormLoader.Error):
                 XCTAssertEqual(receivedError, expectedError)
+            default:
+                XCTFail("Expected to fail with \(expectedError), but got \(result)")
             }
             exp.fulfill()
         }
@@ -142,7 +142,7 @@ class CacheFormUseCaseTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
-    func expectSuccessfulCompletionFor(_ sut: LocalFormLoader, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
+    func expectSuccessfulCompletionFor(_ sut: FormCacher, when action: () -> Void, file: StaticString = #filePath, line: UInt = #line) {
         let exp = expectation(description: "Wait for completion")
         sut.save(simpleForm()) { result in
             switch result {

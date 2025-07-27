@@ -19,6 +19,7 @@
 		719309C22E3585C900704A69 /* LocalFormLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C12E3585B600704A69 /* LocalFormLoader.swift */; };
 		719309C52E35871100704A69 /* FormStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C42E35870B00704A69 /* FormStore.swift */; };
 		719309C72E35872900704A69 /* FormStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C62E35872200704A69 /* FormStoreSpy.swift */; };
+		719309CA2E36DF5100704A69 /* FormCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C92E36DF4E00704A69 /* FormCacher.swift */; };
 		71C51EE52E32649B00AF92C6 /* Lumiform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C51EDC2E32649A00AF92C6 /* Lumiform.framework */; };
 		71C51EEB2E32649B00AF92C6 /* Lumiform.h in Headers */ = {isa = PBXBuildFile; fileRef = 71C51EDF2E32649A00AF92C6 /* Lumiform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		71C51EFA2E3264B500AF92C6 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C51EF42E3264B500AF92C6 /* URLSessionHTTPClientTests.swift */; };
@@ -53,6 +54,7 @@
 		719309C12E3585B600704A69 /* LocalFormLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFormLoader.swift; sourceTree = "<group>"; };
 		719309C42E35870B00704A69 /* FormStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormStore.swift; sourceTree = "<group>"; };
 		719309C62E35872200704A69 /* FormStoreSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormStoreSpy.swift; sourceTree = "<group>"; };
+		719309C92E36DF4E00704A69 /* FormCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormCacher.swift; sourceTree = "<group>"; };
 		71C51EDC2E32649A00AF92C6 /* Lumiform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumiform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71C51EDF2E32649A00AF92C6 /* Lumiform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumiform.h; sourceTree = "<group>"; };
 		71C51EE42E32649B00AF92C6 /* LumiformTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumiformTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -90,6 +92,7 @@
 				7180CBA52E33B2FA00A7883E /* Form.swift */,
 				7180CBA72E33B31200A7883E /* FormItem.swift */,
 				7180CBAD2E33DDE000A7883E /* FormLoader.swift */,
+				719309C92E36DF4E00704A69 /* FormCacher.swift */,
 			);
 			path = "Form Feature";
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				7180CBA62E33B2FC00A7883E /* Form.swift in Sources */,
 				71C51F012E3264C400AF92C6 /* HTTPClient.swift in Sources */,
 				7180CBA82E33B31400A7883E /* FormItem.swift in Sources */,
+				719309CA2E36DF5100704A69 /* FormCacher.swift in Sources */,
 				719309C22E3585C900704A69 /* LocalFormLoader.swift in Sources */,
 				71C51F022E3264C400AF92C6 /* URLSessionHTTPClient.swift in Sources */,
 			);
