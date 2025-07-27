@@ -68,7 +68,7 @@ class CodableFormStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(nil))
     }
 
-    func test_retrieve_afterInsertingToEmptyCache_deliversInsertedValues() {
+    func test_retrieve_deliversExpectedFormOnNonEmptyCache() {
         let sut = makeSUT()
         let formToInsert = Form(rootPage: FormItem.simpleSampleData().item)
         let timestamp = Date()
