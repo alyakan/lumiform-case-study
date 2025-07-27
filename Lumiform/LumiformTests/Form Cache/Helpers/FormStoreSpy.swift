@@ -57,4 +57,8 @@ final class FormStoreSpy: FormStore {
     func completeRetrieval(with error: Error, at index: Int = 0) {
         retrievalCompletions[index](.failure(error))
     }
+
+    func completeRetrieval(with form: Form?, at index: Int = 0) {
+        retrievalCompletions[index](.success(form))
+    }
 }

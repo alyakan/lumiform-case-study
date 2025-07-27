@@ -15,6 +15,7 @@ public final class LocalFormLoader {
         case existingCacheDeleteFailed
         case insertionFailed
         case retrievalFailed
+        case emptyCache
     }
 
     public init(store: FormStore, currentDate: @escaping () -> Date) {
@@ -51,8 +52,17 @@ public final class LocalFormLoader {
 
 extension LocalFormLoader: FormLoader {
     public func load(completion: @escaping (FormLoader.Result) -> Void) {
-        store.retrieve { _ in
-            completion(.failure(Error.retrievalFailed))
+        store.retrieve { result in
+            switch result {
+            case .success(let form):
+                guard let form else {
+                    return completion(.failure(Error.emptyCache))
+                }
+
+                completion(.success(form))
+            case .failure:
+                completion(.failure(Error.retrievalFailed))
+            }
         }
     }
 }
