@@ -22,7 +22,7 @@ final class CodableFormStore: FormStore {
     }
 
     func deleteCachedForm(completion: @escaping DeletionCompletion) {
-
+        completion(.success(()))
     }
     
     func insert(_ form: Lumiform.Form, timestamp: Date, completion: @escaping InsertionCompletion) {
@@ -97,6 +97,22 @@ class CodableFormStoreTests: XCTestCase {
         insert(secondFormToInsert, secondTimestamp, to: sut)
 
         expect(sut, toRetrieve: .success(secondFormToInsert))
+    }
+
+    func test_delete_succeedsOnEmptyCache() {
+        let sut = makeSUT()
+
+        let exp = expectation(description: "Wait for completion")
+        sut.deleteCachedForm { receivedResult in
+            switch receivedResult {
+            case .success:
+                break
+            case .failure:
+                XCTFail("Expected to succeed, but got \(receivedResult) instead")
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
     }
 
     // MARK: - Helpers
