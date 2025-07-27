@@ -78,6 +78,14 @@ class CodableFormStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(formToInsert))
     }
 
+    func test_retrieve_deliversErrorOnCorruptedData() {
+        let sut = makeSUT()
+
+        try! "invalid data".write(to: storeURL, atomically: false, encoding: .utf8)
+
+        expect(sut, toRetrieve: .failure(anyNSError()))
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FormStore {
