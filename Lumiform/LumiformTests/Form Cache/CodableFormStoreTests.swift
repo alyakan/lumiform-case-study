@@ -86,6 +86,19 @@ class CodableFormStoreTests: XCTestCase {
         expect(sut, toRetrieve: .failure(anyNSError()))
     }
 
+    func test_insert_overridesPreviouslyInsertedCache() {
+        let sut = makeSUT()
+        let firstFormToInsert = Form(rootPage: FormItem.simpleSampleData().item)
+        let secondFormToInsert = Form(rootPage: FormItem.recursiveSampleData().item)
+        let firstTimestamp = Date()
+        let secondTimestamp = Date(timeIntervalSinceNow: 1)
+        
+        insert(firstFormToInsert, firstTimestamp, to: sut)
+        insert(secondFormToInsert, secondTimestamp, to: sut)
+
+        expect(sut, toRetrieve: .success(secondFormToInsert))
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FormStore {
