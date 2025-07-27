@@ -10,12 +10,16 @@ import Lumiform
 final class FormStoreSpy: FormStore {
     private var deletionCompletions: [DeletionCompletion] = []
     private var insertionCompletions: [InsertionCompletion] = []
+    private var retrievalCompletions: [RetrievalCompletion] = []
     private(set) var receivedMessages = [Message]()
 
     enum Message: Equatable {
         case deleteCachedForm
         case insert(Form, Date)
+        case retrieve
     }
+
+    // MARK: - FormStore protocol
 
     func deleteCachedForm(completion: @escaping FormStore.DeletionCompletion) {
         receivedMessages.append(.deleteCachedForm)
@@ -26,6 +30,13 @@ final class FormStoreSpy: FormStore {
         receivedMessages.append(.insert(form, timestamp))
         insertionCompletions.append(completion)
     }
+
+    func retrieve(completion: @escaping RetrievalCompletion) {
+        receivedMessages.append(.retrieve)
+
+    }
+
+    // MARK: - Helpers
 
     func completeDeletion(with error: Error, at index: Int = 0) {
         deletionCompletions[index](.failure(error))

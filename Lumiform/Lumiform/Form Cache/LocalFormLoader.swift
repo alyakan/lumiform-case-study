@@ -47,3 +47,9 @@ public final class LocalFormLoader {
         }
     }
 }
+
+extension LocalFormLoader: FormLoader {
+    public func load(completion: @escaping (FormLoader.Result) -> Void) {
+        store.retrieve { _ in }
+    }
+}
