@@ -22,6 +22,11 @@ public final class LocalFormLoader {
         self.store = store
         self.currentDate = currentDate
     }
+}
+
+// MARK: - Caching
+
+extension LocalFormLoader {
 
     public func save(_ form: Form, completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedForm { [weak self] result in
@@ -49,6 +54,8 @@ public final class LocalFormLoader {
         }
     }
 }
+
+// MARK: - Loading Cache
 
 extension LocalFormLoader: FormLoader {
     public func load(completion: @escaping (FormLoader.Result) -> Void) {
