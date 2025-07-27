@@ -16,9 +16,17 @@ class LocalFormLoaderUseCaseTests: XCTestCase {
         XCTAssertTrue(store.receivedMessages.isEmpty)
     }
 
+    func test_load_requestsCacheRetrieval() {
+        let (sut, store) = makeSUT()
+
+        sut.load { _ in }
+
+        XCTAssertEqual(store.receivedMessages, [.retrieve])
+    }
+
     // MARK: - Helpers
 
-    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (LocalFormLoader, FormStoreSpy) {
+    private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (FormLoader, FormStoreSpy) {
         let store = FormStoreSpy()
         let sut = LocalFormLoader(store: store, currentDate: Date.init)
         trackForMemoryLeaks(store)
