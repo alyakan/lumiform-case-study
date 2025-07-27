@@ -58,6 +58,21 @@ class LocalFormLoaderUseCaseTests: XCTestCase {
         XCTAssertEqual(store.receivedMessages, [.retrieve, .deleteCachedForm])
     }
 
+    func test_load_doesNotDeliverResultAfterSUTDeallocated() {
+        let store = FormStoreSpy()
+        var sut: FormLoader? = LocalFormLoader(store: store, currentDate: Date.init)
+
+        var receivedResults: [FormLoader.Result] = []
+        sut?.load { result in
+            receivedResults.append(result)
+        }
+
+        sut = nil
+        store.completeRetrieval(with: Form(rootPage: FormItem.simpleSampleData().item))
+
+        XCTAssertTrue(receivedResults.isEmpty)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (FormLoader, FormStoreSpy) {
