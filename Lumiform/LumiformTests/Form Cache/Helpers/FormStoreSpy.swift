@@ -33,7 +33,7 @@ final class FormStoreSpy: FormStore {
 
     func retrieve(completion: @escaping RetrievalCompletion) {
         receivedMessages.append(.retrieve)
-
+        retrievalCompletions.append(completion)
     }
 
     // MARK: - Helpers
@@ -52,5 +52,9 @@ final class FormStoreSpy: FormStore {
 
     func completeInsertionSuccessfully(at index: Int = 0) {
         insertionCompletions[index](.success(()))
+    }
+
+    func completeRetrieval(with error: Error, at index: Int = 0) {
+        retrievalCompletions[index](.failure(error))
     }
 }

@@ -14,6 +14,7 @@ public final class LocalFormLoader {
     public enum Error: Swift.Error {
         case existingCacheDeleteFailed
         case insertionFailed
+        case retrievalFailed
     }
 
     public init(store: FormStore, currentDate: @escaping () -> Date) {
@@ -50,6 +51,8 @@ public final class LocalFormLoader {
 
 extension LocalFormLoader: FormLoader {
     public func load(completion: @escaping (FormLoader.Result) -> Void) {
-        store.retrieve { _ in }
+        store.retrieve { _ in
+            completion(.failure(Error.retrievalFailed))
+        }
     }
 }
