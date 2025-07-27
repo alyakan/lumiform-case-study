@@ -6,8 +6,6 @@
 //
 
 public final class LocalFormLoader {
-    public typealias SaveResult = Result<Void, Error>
-
     private let store: FormStore
     private let currentDate: () -> Date
 
@@ -26,7 +24,7 @@ public final class LocalFormLoader {
 
 // MARK: - Caching
 
-extension LocalFormLoader {
+extension LocalFormLoader: FormCacher {
 
     public func save(_ form: Form, completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedForm { [weak self] result in
@@ -36,7 +34,7 @@ extension LocalFormLoader {
             case .success:
                 cache(form, completion: completion)
             case .failure:
-                completion(.failure(.existingCacheDeleteFailed))
+                completion(.failure(Error.existingCacheDeleteFailed))
             }
         }
     }
