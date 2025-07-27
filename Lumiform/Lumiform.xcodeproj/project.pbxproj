@@ -20,6 +20,7 @@
 		719309C52E35871100704A69 /* FormStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C42E35870B00704A69 /* FormStore.swift */; };
 		719309C72E35872900704A69 /* FormStoreSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C62E35872200704A69 /* FormStoreSpy.swift */; };
 		719309CA2E36DF5100704A69 /* FormCacher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309C92E36DF4E00704A69 /* FormCacher.swift */; };
+		719309CC2E36E01000704A69 /* CodableFormStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309CB2E36E00900704A69 /* CodableFormStoreTests.swift */; };
 		71C51EE52E32649B00AF92C6 /* Lumiform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C51EDC2E32649A00AF92C6 /* Lumiform.framework */; };
 		71C51EEB2E32649B00AF92C6 /* Lumiform.h in Headers */ = {isa = PBXBuildFile; fileRef = 71C51EDF2E32649A00AF92C6 /* Lumiform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		71C51EFA2E3264B500AF92C6 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C51EF42E3264B500AF92C6 /* URLSessionHTTPClientTests.swift */; };
@@ -55,6 +56,7 @@
 		719309C42E35870B00704A69 /* FormStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormStore.swift; sourceTree = "<group>"; };
 		719309C62E35872200704A69 /* FormStoreSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormStoreSpy.swift; sourceTree = "<group>"; };
 		719309C92E36DF4E00704A69 /* FormCacher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormCacher.swift; sourceTree = "<group>"; };
+		719309CB2E36E00900704A69 /* CodableFormStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFormStoreTests.swift; sourceTree = "<group>"; };
 		71C51EDC2E32649A00AF92C6 /* Lumiform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumiform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71C51EDF2E32649A00AF92C6 /* Lumiform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumiform.h; sourceTree = "<group>"; };
 		71C51EE42E32649B00AF92C6 /* LumiformTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumiformTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +201,7 @@
 				719309C32E3586EE00704A69 /* Helpers */,
 				71E5CA862E35578D00FA179F /* LocalFormLoaderUseCaseTests.swift */,
 				719309BE2E355A4F00704A69 /* CacheFormUseCaseTests.swift */,
+				719309CB2E36E00900704A69 /* CodableFormStoreTests.swift */,
 			);
 			path = "Form Cache";
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				719309BF2E355A5400704A69 /* CacheFormUseCaseTests.swift in Sources */,
 				7180CBAC2E33B61800A7883E /* HTTPClientSpy.swift in Sources */,
 				7180CB9F2E327E3100A7883E /* RemoteFormLoaderUseCaseTests.swift in Sources */,
+				719309CC2E36E01000704A69 /* CodableFormStoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
