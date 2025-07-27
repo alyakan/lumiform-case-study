@@ -15,7 +15,11 @@ final class CodableFormStore: FormStore {
         let timestamp: Date
     }
 
-    private let storeURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("lumiform.store")
+    private let storeURL: URL
+
+    init(storeURL: URL) {
+        self.storeURL = storeURL
+    }
 
     func deleteCachedForm(completion: @escaping DeletionCompletion) {
 
@@ -48,6 +52,7 @@ final class CodableFormStore: FormStore {
 }
 
 class CodableFormStoreTests: XCTestCase {
+    private let storeURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("lumiform.store.test")
 
     override func setUpWithError() throws {
         removeFilesFromDisk()
@@ -102,13 +107,12 @@ class CodableFormStoreTests: XCTestCase {
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FormStore {
-        let sut = CodableFormStore()
+        let sut = CodableFormStore(storeURL: storeURL)
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }
 
     private func removeFilesFromDisk() {
-        let storeUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("lumiform.store")
-        try? FileManager.default.removeItem(at: storeUrl)
+        try? FileManager.default.removeItem(at: storeURL)
     }
 }
