@@ -5,15 +5,13 @@
 //  Created by Aly Yakan on 25/07/2025.
 //
 
-// By having separate models from our `remote` ones, we hide the `Decodable` implementation details from our business logic.
-
-public enum FormItem: Equatable {
+public enum FormItem: Equatable, Codable {
     case page(Page)
     case section(Section)
     case question(Question)
 }
 
-public struct Page: Equatable {
+public struct Page: Equatable, Codable {
     public let title: String
     public let items: [FormItem]
 
@@ -23,7 +21,7 @@ public struct Page: Equatable {
     }
 }
 
-public struct Section: Equatable {
+public struct Section: Equatable, Codable {
     public let title: String
     public let items: [FormItem]
 
@@ -33,12 +31,12 @@ public struct Section: Equatable {
     }
 }
 
-public enum Question: Equatable {
+public enum Question: Equatable, Codable {
     case text(TextQuestion)
     case image(ImageQuestion)
 }
 
-public struct TextQuestion: Equatable, Decodable {
+public struct TextQuestion: Equatable, Codable {
     public let title: String
 
     public init(title: String) {
@@ -46,7 +44,7 @@ public struct TextQuestion: Equatable, Decodable {
     }
 }
 
-public struct ImageQuestion: Equatable, Decodable {
+public struct ImageQuestion: Equatable, Codable {
     public let title: String
     public let sourceURL: URL
 
