@@ -73,17 +73,7 @@ class CodableFormStoreTests: XCTestCase {
         let formToInsert = Form(rootPage: FormItem.simpleSampleData().item)
         let timestamp = Date()
 
-        let exp = expectation(description: "Wait for completion")
-        sut.insert(formToInsert, timestamp: timestamp) { insertionResult in
-            switch insertionResult {
-            case .success:
-                break
-            case .failure:
-                XCTFail("Expected successful insertion, but got: \(insertionResult)")
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        insert(formToInsert, timestamp, to: sut)
 
         expect(sut, toRetrieve: .success(formToInsert))
     }
@@ -105,7 +95,21 @@ class CodableFormStoreTests: XCTestCase {
             case (.failure, .failure):
                 break
             default:
-                XCTFail("Expected \(expectedResult), got \(receivedResult) instead")
+                XCTFail("Expected \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    private func insert(_ formToInsert: Form, _ timestamp: Date, to sut: FormStore, file: StaticString = #file, line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        sut.insert(formToInsert, timestamp: timestamp) { insertionResult in
+            switch insertionResult {
+            case .success:
+                break
+            case .failure:
+                XCTFail("Expected successful insertion, but got: \(insertionResult)", file: file, line: line)
             }
             exp.fulfill()
         }
