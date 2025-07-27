@@ -25,7 +25,7 @@ final class CodableFormStore: FormStore {
         guard FileManager.default.fileExists(atPath: storeURL.path) else {
             return completion(.success(()))
         }
-        
+
         do {
             try FileManager.default.removeItem(at: storeURL)
             completion(.success(()))
@@ -111,17 +111,8 @@ class CodableFormStoreTests: XCTestCase {
     func test_deleteCachedFeed_succeedsOnEmptyCache() {
         let sut = makeSUT()
 
-        let exp = expectation(description: "Wait for completion")
-        sut.deleteCachedForm { receivedResult in
-            switch receivedResult {
-            case .success:
-                break
-            case .failure:
-                XCTFail("Expected to succeed, but got \(receivedResult) instead")
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        let deletionError = deleteCache(from: sut)
+        XCTAssertNil(deletionError, "Expected no error deleting from empty cache, but got \(String(describing: deletionError))")
     }
 
     func test_deleteCachedFeed_deletesCachedData() {
@@ -129,18 +120,9 @@ class CodableFormStoreTests: XCTestCase {
         let formToInsert = Form(rootPage: FormItem.simpleSampleData().item)
         
         insert(formToInsert, Date(), to: sut)
-        
-        let exp = expectation(description: "Wait for completion")
-        sut.deleteCachedForm { receivedResult in
-            switch receivedResult {
-            case .success:
-                break
-            case .failure:
-                XCTFail("Expected to succeed, but got \(receivedResult) instead")
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+
+        let deletionError = deleteCache(from: sut)
+        XCTAssertNil(deletionError, "Expected no error deleting from empty cache, but got \(String(describing: deletionError))")
 
         expect(sut, toRetrieve: .success(nil))
     }
@@ -181,6 +163,24 @@ class CodableFormStoreTests: XCTestCase {
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
+    }
+
+    private func deleteCache(from sut: FormStore) -> Error? {
+        var deletionError: Error?
+
+        let exp = expectation(description: "Wait for completion")
+        sut.deleteCachedForm { receivedResult in
+            switch receivedResult {
+            case .success:
+                break
+            case .failure(let error):
+                deletionError = error
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+
+        return deletionError
     }
 
     private func removeFilesFromDisk() {
