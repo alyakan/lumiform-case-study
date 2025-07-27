@@ -75,6 +75,33 @@ class CodableFormStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(nil))
     }
 
+    func test_storeOperations_runSerially() {
+        let sut = makeSUT()
+        var completedExpectations = [XCTestExpectation]()
+
+        let op1 = expectation(description: "Op 1")
+        sut.insert(form(), timestamp: Date()) { _ in
+            completedExpectations.append(op1)
+            op1.fulfill()
+        }
+
+        let op2 = expectation(description: "Op 2")
+        sut.insert(form(), timestamp: Date()) { _ in
+            completedExpectations.append(op2)
+            op2.fulfill()
+        }
+
+        let op3 = expectation(description: "Op 3")
+        sut.insert(form(), timestamp: Date()) { _ in
+            completedExpectations.append(op3)
+            op3.fulfill()
+        }
+
+        waitForExpectations(timeout: 5.0)
+
+        XCTAssertEqual(completedExpectations, [op1, op2, op3], "Expected operations to run serially but this was the order: \(completedExpectations)")
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FormStore {
@@ -133,5 +160,9 @@ class CodableFormStoreTests: XCTestCase {
 
     private func removeFilesFromDisk() {
         try? FileManager.default.removeItem(at: storeURL)
+    }
+
+    private func form() -> Form {
+        Form(rootPage: FormItem.simpleSampleData().item)
     }
 }
