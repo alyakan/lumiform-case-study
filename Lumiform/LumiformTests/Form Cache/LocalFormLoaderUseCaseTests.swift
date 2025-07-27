@@ -40,6 +40,24 @@ class LocalFormLoaderUseCaseTests: XCTestCase {
         })
     }
 
+    func test_load_deliversCachedFormOnSuccess() {
+        let (sut, store) = makeSUT()
+        let expectedForm = Form(rootPage: FormItem.simpleSampleData().item)
+
+        expect(sut, toCompleteWith: expectedForm, when: {
+            store.completeRetrieval(with: expectedForm)
+        })
+    }
+
+    func test_load_deletesCacheOnRetrievalError() {
+        let (sut, store) = makeSUT()
+
+        sut.load { _ in }
+        store.completeRetrieval(with: anyNSError())
+
+        XCTAssertEqual(store.receivedMessages, [.retrieve, .deleteCachedForm])
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (FormLoader, FormStoreSpy) {
@@ -65,6 +83,30 @@ class LocalFormLoaderUseCaseTests: XCTestCase {
                 XCTAssertEqual(receivedError, expectedError)
             default:
                 XCTFail("Expected \(expectedError) but got \(receivedResult)")
+            }
+            exp.fulfill()
+        }
+
+        action()
+
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    private func expect(
+        _ sut: FormLoader,
+        toCompleteWith expectedForm: Form,
+        when action: () -> Void,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+
+        let exp = expectation(description: "Waiting for completion")
+        sut.load { receivedResult in
+            switch receivedResult {
+            case .success(let receivedForm):
+                XCTAssertEqual(receivedForm, expectedForm)
+            default:
+                XCTFail("Expected success, got \(receivedResult) instead.")
             }
             exp.fulfill()
         }

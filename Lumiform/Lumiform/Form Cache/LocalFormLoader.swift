@@ -52,7 +52,9 @@ public final class LocalFormLoader {
 
 extension LocalFormLoader: FormLoader {
     public func load(completion: @escaping (FormLoader.Result) -> Void) {
-        store.retrieve { result in
+        store.retrieve { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let form):
                 guard let form else {
@@ -61,6 +63,7 @@ extension LocalFormLoader: FormLoader {
 
                 completion(.success(form))
             case .failure:
+                store.deleteCachedForm { _ in }
                 completion(.failure(Error.retrievalFailed))
             }
         }
