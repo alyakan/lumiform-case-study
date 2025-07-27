@@ -65,17 +65,7 @@ class CodableFormStoreTests: XCTestCase {
     func test_retrieve_deliversNilOnEmptyCache() {
         let sut = makeSUT()
 
-        let exp = expectation(description: "Wait for completion")
-        sut.retrieve { receivedResult in
-            switch receivedResult {
-            case .success(let receivedForm):
-                XCTAssertNil(receivedForm, "Expected nil form but got: \(receivedForm!)")
-            default:
-                XCTFail("Expected success with nil form but got: \(receivedResult)")
-            }
-            exp.fulfill()
-        }
-        wait(for: [exp], timeout: 1.0)
+        expect(sut, toRetrieve: .success(nil))
     }
 
     func test_retrieve_afterInsertingToEmptyCache_deliversInsertedValues() {
@@ -87,21 +77,15 @@ class CodableFormStoreTests: XCTestCase {
         sut.insert(formToInsert, timestamp: timestamp) { insertionResult in
             switch insertionResult {
             case .success:
-                sut.retrieve { retrievalResult in
-                    switch retrievalResult {
-                    case .success(let receivedForm):
-                        guard let receivedForm else { return XCTFail("Expected non-nil form but got nil") }
-                        XCTAssertEqual(receivedForm, formToInsert, "Expected to retrieve the form we inserted, but got: \(receivedForm)")
-                    case .failure:
-                        XCTFail("Expected successful retrieval, but got: \(retrievalResult)")
-                    }
-                    exp.fulfill()
-                }
+                break
             case .failure:
                 XCTFail("Expected successful insertion, but got: \(insertionResult)")
             }
+            exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
+
+        expect(sut, toRetrieve: .success(formToInsert))
     }
 
     // MARK: - Helpers
@@ -110,6 +94,22 @@ class CodableFormStoreTests: XCTestCase {
         let sut = CodableFormStore(storeURL: storeURL)
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
+    }
+
+    private func expect(_ sut: FormStore, toRetrieve expectedResult: FormStore.RetrievalResult, file: StaticString = #file, line: UInt = #line) {
+        let exp = expectation(description: "Wait for completion")
+        sut.retrieve { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case let (.success(receivedForm), .success(expectedForm)):
+                XCTAssertEqual(receivedForm, expectedForm)
+            case (.failure, .failure):
+                break
+            default:
+                XCTFail("Expected \(expectedResult), got \(receivedResult) instead")
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
     }
 
     private func removeFilesFromDisk() {
