@@ -32,6 +32,14 @@ class LocalFormLoaderUseCaseTests: XCTestCase {
         })
     }
 
+    func test_load_failsOnEmptyCache() {
+        let (sut, store) = makeSUT()
+
+        expect(sut, toCompleteWithError: .emptyCache, when: {
+            store.completeRetrieval(with: nil)
+        })
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (FormLoader, FormStoreSpy) {
