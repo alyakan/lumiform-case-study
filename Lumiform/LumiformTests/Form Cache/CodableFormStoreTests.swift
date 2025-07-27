@@ -22,7 +22,16 @@ final class CodableFormStore: FormStore {
     }
 
     func deleteCachedForm(completion: @escaping DeletionCompletion) {
-        completion(.success(()))
+        guard FileManager.default.fileExists(atPath: storeURL.path) else {
+            return completion(.success(()))
+        }
+        
+        do {
+            try FileManager.default.removeItem(at: storeURL)
+            completion(.success(()))
+        } catch {
+            completion(.failure(error))
+        }
     }
     
     func insert(_ form: Lumiform.Form, timestamp: Date, completion: @escaping InsertionCompletion) {
@@ -99,7 +108,7 @@ class CodableFormStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(secondFormToInsert))
     }
 
-    func test_delete_succeedsOnEmptyCache() {
+    func test_deleteCachedFeed_succeedsOnEmptyCache() {
         let sut = makeSUT()
 
         let exp = expectation(description: "Wait for completion")
@@ -113,6 +122,27 @@ class CodableFormStoreTests: XCTestCase {
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
+    }
+
+    func test_deleteCachedFeed_deletesCachedData() {
+        let sut = makeSUT()
+        let formToInsert = Form(rootPage: FormItem.simpleSampleData().item)
+        
+        insert(formToInsert, Date(), to: sut)
+        
+        let exp = expectation(description: "Wait for completion")
+        sut.deleteCachedForm { receivedResult in
+            switch receivedResult {
+            case .success:
+                break
+            case .failure:
+                XCTFail("Expected to succeed, but got \(receivedResult) instead")
+            }
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 1.0)
+
+        expect(sut, toRetrieve: .success(nil))
     }
 
     // MARK: - Helpers
