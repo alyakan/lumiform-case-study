@@ -19,6 +19,10 @@ final class FormImageViewModel: ObservableObject {
     }
 
     func load(from sourceURL: URL) {
+        guard uiimages[sourceURL.absoluteString] == nil else {
+            return
+        }
+
         imageDataLoader.loadImageData(from: sourceURL) { [weak self] result in
             guard let self else { return }
 
