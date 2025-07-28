@@ -21,6 +21,7 @@ public final class CodableFormStore: FormStore {
 
     public func deleteCachedForm(completion: @escaping DeletionCompletion) {
         let storeURL = self.storeURL
+
         queue.async(flags: .barrier) {
             guard FileManager.default.fileExists(atPath: storeURL.path) else {
                 return completion(.success(()))
@@ -37,6 +38,7 @@ public final class CodableFormStore: FormStore {
 
     public func insert(_ form: Lumiform.Form, timestamp: Date, completion: @escaping InsertionCompletion) {
         let storeURL = self.storeURL
+
         queue.async(flags: .barrier) {
             let encoder = JSONEncoder()
             do {
@@ -51,6 +53,7 @@ public final class CodableFormStore: FormStore {
 
     public func retrieve(completion: @escaping RetrievalCompletion) {
         let storeURL = self.storeURL
+
         queue.async {
             guard let data = try? Data(contentsOf: storeURL) else {
                 return completion(.success(nil))
@@ -70,7 +73,8 @@ public final class CodableFormStore: FormStore {
 extension CodableFormStore: FormImageDataStore {
 
     public func insert(_ data: Data, for url: URL, completion: @escaping (FormImageDataStore.InsertionResult) -> Void) {
-        let imageFileURL = storeURL.appending(component: "img\(url.absoluteString.hashValue)")
+        let imageFileURL = imageFileURL(for: url)
+
         queue.async(flags: .barrier) { [weak self] in
             do {
                 try self?.createStoreDirectoryIfNeeded()
@@ -83,7 +87,24 @@ extension CodableFormStore: FormImageDataStore {
     }
 
     public func retrieveData(for url: URL, completion: @escaping (FormImageDataStore.RetrievalResult) -> Void) {
-        completion(.success(nil))
+        let imageFileURL = imageFileURL(for: url)
+
+        queue.async {
+            guard FileManager.default.fileExists(atPath: imageFileURL.path) else {
+                return completion(.success(.none))
+            }
+
+            do {
+                let data = try Data(contentsOf: imageFileURL)
+                completion(.success(data))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private func imageFileURL(for url: URL) -> URL {
+        storeURL.appending(component: "img\(url.absoluteString.hashValue)")
     }
 
     private func createStoreDirectoryIfNeeded() throws {

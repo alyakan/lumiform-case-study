@@ -12,11 +12,11 @@ class CodableFormImageDataStoreTests: XCTestCase {
     private let storeURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("lumiform.imageStore.test")
 
     override func setUpWithError() throws {
-        removeFilesFromDisk()
+        try removeFilesFromDisk()
     }
 
     override func tearDownWithError() throws {
-        removeFilesFromDisk()
+        try removeFilesFromDisk()
     }
 
     func test_retrieveImageData_deliversNilOnEmptyCache() {
@@ -33,6 +33,18 @@ class CodableFormImageDataStoreTests: XCTestCase {
         insert(anyData(), for: url, into: sut)
 
         expect(sut, toCompleteRetrievalWith: .success(.none), for: nonMatchingURL)
+    }
+
+    func test_retrieveImageData_deliversLastInsertedValue() {
+        let sut = makeSUT()
+        let url = anyURL()
+        let firstStoredData = Data("first".utf8)
+        let lastStoredData = Data("last".utf8)
+
+        insert(firstStoredData, for: url, into: sut)
+        insert(lastStoredData, for: url, into: sut)
+
+        expect(sut, toCompleteRetrievalWith: .success(lastStoredData), for: url)
     }
 
     // MARK: - Helpers
@@ -78,8 +90,12 @@ class CodableFormImageDataStoreTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    private func removeFilesFromDisk() {
-        try? FileManager.default.removeItem(at: storeURL)
+    private func removeFilesFromDisk() throws {
+        var isDir: ObjCBool = true
+        guard FileManager.default.fileExists(atPath: storeURL.path(), isDirectory: &isDir) else {
+            return
+        }
+        try FileManager.default.removeItem(at: storeURL)
     }
 
     private func form() -> Form {
