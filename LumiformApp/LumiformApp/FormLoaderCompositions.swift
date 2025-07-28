@@ -19,7 +19,6 @@ final class RemoteLoaderWithCache: FormLoader {
 
     func load(completion: @escaping (FormLoader.Result) -> Void) {
         remoteLoader.load { [weak self] loadResult in
-            print("\(Self.self) \(loadResult)")
             guard let self else { return }
 
             switch loadResult {
@@ -45,7 +44,6 @@ final class FormLoaderWithFallback: FormLoader {
 
     func load(completion: @escaping (FormLoader.Result) -> Void) {
         formLoader.load { [weak self] loadResult in
-            print("\(Self.self) \(loadResult)")
             guard let self else { return }
 
             switch loadResult {
