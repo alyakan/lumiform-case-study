@@ -23,7 +23,8 @@ class FormViewModel: ObservableObject {
             switch result {
             case .success(let form):
                 self?.rootItem = form.rootPage
-            case .failure:
+            case .failure(let error):
+                print(String(describing: error))
                 self?.error = "Something went wrong"
             }
         }

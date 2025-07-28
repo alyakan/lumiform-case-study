@@ -10,6 +10,7 @@ import Lumiform
 
 enum Constants {
     static let serverURL = URL(string: "https://mocki.io/v1/f118b9f0-6f84-435e-85d5-faf4453eb72a")!
+    static let localStoreURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("lumiform.store")
 }
 
 @main
@@ -17,10 +18,19 @@ struct LumiformApp: App {
     private let formViewModel: FormViewModel
 
     init() {
-        let urlSession = URLSession(configuration: .default) // TODO: Switch to ephemeral after implementing the caching loader
+        let urlSession = URLSession(configuration: .ephemeral)
         let httpClient = URLSessionHTTPClient(session: urlSession)
-        let formLoader = MainQueueDispatchDecorator(decoratee: RemoteFormLoader(url: Constants.serverURL, client: httpClient))
-        self.formViewModel = FormViewModel(loader: formLoader)
+        let localStore = CodableFormStore(storeURL: Constants.localStoreURL)
+
+        let remoteLoader = RemoteFormLoader(url: Constants.serverURL, client: httpClient)
+        let localLoader = LocalFormLoader(store: localStore, currentDate: Date.init)
+        let remoteLoaderWithCache = RemoteLoaderWithCache(remoteLoader: remoteLoader, formCacher: localLoader)
+        let remoteLoaderWithLocalFallback = FormLoaderWithFallback(formLoader: remoteLoaderWithCache, fallbackLoader: localLoader)
+
+        let mainQueueFormLoader = MainQueueDispatchDecorator(decoratee: remoteLoaderWithLocalFallback)
+//        let mainQueueFormLoader = MainQueueDispatchDecorator(decoratee: remoteLoader)
+
+        self.formViewModel = FormViewModel(loader: mainQueueFormLoader)
     }
 
     var body: some Scene {
@@ -29,30 +39,6 @@ struct LumiformApp: App {
                 FormView(viewModel: formViewModel)
                     .navigationTitle(Text("Lumiform"))
             }
-        }
-    }
-}
-
-final class MainQueueDispatchDecorator<T> {
-    private let decoratee: T
-
-    init(decoratee: T) {
-        self.decoratee = decoratee
-    }
-
-    func dispatch(completion: @escaping () -> Void) {
-        guard Thread.isMainThread else {
-            return DispatchQueue.main.async { completion() }
-        }
-
-        completion()
-    }
-}
-
-extension MainQueueDispatchDecorator: FormLoader where T: FormLoader {
-    func load(completion: @escaping (FormLoader.Result) -> Void) {
-        decoratee.load { [weak self] result in
-            self?.dispatch { completion(result) }
         }
     }
 }

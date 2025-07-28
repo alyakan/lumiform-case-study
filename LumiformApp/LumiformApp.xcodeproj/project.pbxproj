@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		719309D12E36FD3B00704A69 /* FormLoaderCompositions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309D02E36FD3300704A69 /* FormLoaderCompositions.swift */; };
+		719309D32E36FD5C00704A69 /* MainQueueDispatcherDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309D22E36FD5500704A69 /* MainQueueDispatcherDecorator.swift */; };
 		71E5CA552E33DFF700FA179F /* LumiformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA542E33DFF700FA179F /* LumiformApp.swift */; };
 		71E5CA572E33DFF700FA179F /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA562E33DFF700FA179F /* FormView.swift */; };
 		71E5CA592E33DFF800FA179F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71E5CA582E33DFF800FA179F /* Assets.xcassets */; };
@@ -36,6 +38,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		719309D02E36FD3300704A69 /* FormLoaderCompositions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLoaderCompositions.swift; sourceTree = "<group>"; };
+		719309D22E36FD5500704A69 /* MainQueueDispatcherDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainQueueDispatcherDecorator.swift; sourceTree = "<group>"; };
 		71E5CA512E33DFF700FA179F /* LumiformApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumiformApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E5CA542E33DFF700FA179F /* LumiformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiformApp.swift; sourceTree = "<group>"; };
 		71E5CA562E33DFF700FA179F /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
@@ -86,6 +90,8 @@
 			children = (
 				71E5CA702E33E2CA00FA179F /* Info.plist */,
 				71E5CA542E33DFF700FA179F /* LumiformApp.swift */,
+				719309D02E36FD3300704A69 /* FormLoaderCompositions.swift */,
+				719309D22E36FD5500704A69 /* MainQueueDispatcherDecorator.swift */,
 				71E5CA582E33DFF800FA179F /* Assets.xcassets */,
 				71E5CA7C2E3401AF00FA179F /* Form View */,
 				71E5CA5A2E33DFF800FA179F /* Preview Content */,
@@ -221,8 +227,10 @@
 			files = (
 				71E5CA802E3401F400FA179F /* FormViewModel.swift in Sources */,
 				71E5CA7B2E33FF3900FA179F /* HierarchyFont.swift in Sources */,
+				719309D12E36FD3B00704A69 /* FormLoaderCompositions.swift in Sources */,
 				71E5CA782E33FB1200FA179F /* QuestionView.swift in Sources */,
 				71E5CA572E33DFF700FA179F /* FormView.swift in Sources */,
+				719309D32E36FD5C00704A69 /* MainQueueDispatcherDecorator.swift in Sources */,
 				71E5CA842E34025A00FA179F /* SectionView.swift in Sources */,
 				71E5CA552E33DFF700FA179F /* LumiformApp.swift in Sources */,
 				71E5CA762E33FA8100FA179F /* FormItemView.swift in Sources */,
