@@ -57,6 +57,8 @@ final class LocalFormImageDataLoader: FormImageDataCacher, FormImageDataLoader {
                 guard let data else {
                     return completion(.failure(LoadError.notFound))
                 }
+
+                completion(.success(data))
             case .failure:
                 completion(.failure(LoadError.failed))
             }

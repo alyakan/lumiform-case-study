@@ -43,6 +43,15 @@ final class LocalFormImageDataLoaderUseCaseTests: XCTestCase {
         })
     }
 
+    func test_loadImageDataFromURL_deliversLoadedDataOnSuccess() {
+        let (sut, store) = makeSUT()
+        let expectedData = anyData()
+
+        expect(sut, toCompleteWith: .success(expectedData), when: {
+            store.completeRetrievalSuccessfully(with: expectedData)
+        })
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FormImageDataLoader, store: FormImageDataStoreSpy) {
