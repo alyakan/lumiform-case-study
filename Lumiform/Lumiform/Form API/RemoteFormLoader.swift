@@ -10,7 +10,7 @@ public final class RemoteFormLoader: FormLoader {
     private let client: HTTPClient
 
     public enum Error: Swift.Error {
-        case connectivity, invalidData
+        case connectivity, invalidResponse, invalidData
     }
 
     public init(url: URL, client: HTTPClient) {
@@ -23,7 +23,7 @@ public final class RemoteFormLoader: FormLoader {
             switch result {
             case let .success((data, response)):
                 guard response.statusCode == 200 else {
-                    return completion(.failure(Error.invalidData))
+                    return completion(.failure(Error.invalidResponse))
                 }
 
                 guard let formItem = try? JSONDecoder().decode(RemoteFormItem.self, from: data) else {
@@ -48,7 +48,7 @@ extension RemoteFormItem {
         case let .question(question):
             switch question {
             case let .text(textQuestion):
-                return .question(.text(TextQuestion(title: textQuestion.title)))
+                return .question(.text(TextQuestion(title: textQuestion.content)))
             case let .image(imageQuestion):
                 return .question(.image(ImageQuestion(title: imageQuestion.title, sourceURL: imageQuestion.src)))
             }

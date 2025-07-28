@@ -20,7 +20,7 @@ extension FormItem {
               "items": [
                 {
                   "type": "text",
-                  "title": "Welcome to the main page!"
+                  "content": "Welcome to the main page!"
                 },
                 {
                   "type": "image",
@@ -54,7 +54,7 @@ extension FormItem {
                   "items": [
                     {
                       "type": "text",
-                      "title": "Welcome to the main page!"
+                      "content": "Welcome to the main page!"
                     },
                     {
                       "type": "image",
@@ -69,7 +69,7 @@ extension FormItem {
                   "items": [
                     {
                       "type": "text",
-                      "title": "This is the first chapter."
+                      "content": "This is the first chapter."
                     },
                     {
                       "type": "section",
@@ -77,7 +77,7 @@ extension FormItem {
                       "items": [
                         {
                           "type": "text",
-                          "title": "This is a subsection under Chapter 1."
+                          "content": "This is a subsection under Chapter 1."
                         },
                         {
                           "type": "image",
@@ -98,11 +98,11 @@ extension FormItem {
                       "items": [
                         {
                           "type": "text",
-                          "title": "This is the second chapter."
+                          "content": "This is the second chapter."
                         },
                         {
                           "type": "text",
-                          "title": "What is the main topic of Chapter 2?"
+                          "content": "What is the main topic of Chapter 2?"
                         }
                       ]
                     }

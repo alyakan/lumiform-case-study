@@ -39,7 +39,7 @@ final class RemoteFormLoaderUseCaseTests: XCTestCase {
         let validFormData = FormItem.simpleSampleData().data
 
         samples.forEach { index, code in
-            expect(sut, toCompleteWith: failure(.invalidData), when: {
+            expect(sut, toCompleteWith: failure(.invalidResponse), when: {
                 client.complete(withStatusCode: code, data: validFormData, at: index)
             })
         }
