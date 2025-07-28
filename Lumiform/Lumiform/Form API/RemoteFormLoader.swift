@@ -22,7 +22,7 @@ public final class RemoteFormLoader: FormLoader {
         client.get(from: url) { result in
             switch result {
             case let .success((data, response)):
-                guard response.statusCode == 200 else {
+                guard response.isOK else {
                     return completion(.failure(Error.invalidResponse))
                 }
 
