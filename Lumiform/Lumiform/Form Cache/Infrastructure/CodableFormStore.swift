@@ -66,3 +66,30 @@ public final class CodableFormStore: FormStore {
         }
     }
 }
+
+extension CodableFormStore: FormImageDataStore {
+
+    public func insert(_ data: Data, for url: URL, completion: @escaping (FormImageDataStore.InsertionResult) -> Void) {
+        let imageFileURL = storeURL.appending(component: "img\(url.absoluteString.hashValue)")
+        queue.async(flags: .barrier) { [weak self] in
+            do {
+                try self?.createStoreDirectoryIfNeeded()
+                try data.write(to: imageFileURL)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    public func retrieveData(for url: URL, completion: @escaping (FormImageDataStore.RetrievalResult) -> Void) {
+        completion(.success(nil))
+    }
+
+    private func createStoreDirectoryIfNeeded() throws {
+        var isDir: ObjCBool = true
+        if !FileManager.default.fileExists(atPath: storeURL.path, isDirectory: &isDir) {
+            try FileManager.default.createDirectory(atPath: storeURL.path, withIntermediateDirectories: true)
+        }
+    }
+}
