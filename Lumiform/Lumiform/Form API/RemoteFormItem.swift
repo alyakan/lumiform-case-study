@@ -81,7 +81,7 @@ enum RemoteQuestion: Decodable {
 
 struct RemoteTextQuestion: Decodable {
     let type: String
-    let title: String
+    let content: String
 }
 
 struct RemoteImageQuestion: Decodable {
