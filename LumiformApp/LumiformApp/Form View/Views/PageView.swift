@@ -9,9 +9,17 @@ import SwiftUI
 import Lumiform
 
 struct PageView: View {
-    let page: Page
-    let sectionDepth: Int
-    let isRoot: Bool
+    private let viewModel: FormViewModel
+    private let page: Page
+    private let sectionDepth: Int
+    private let isRoot: Bool
+
+    init(viewModel: FormViewModel, page: Page, sectionDepth: Int, isRoot: Bool) {
+        self.viewModel = viewModel
+        self.page = page
+        self.sectionDepth = sectionDepth
+        self.isRoot = isRoot
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -23,7 +31,7 @@ struct PageView: View {
                 .font(HierarchyFont.pageFont())
 
             ForEach(page.items.indices, id: \.self) { idx in
-                FormItemView(item: page.items[idx], sectionDepth: sectionDepth)
+                FormItemView(viewModel: viewModel, item: page.items[idx], sectionDepth: sectionDepth)
             }
         }
     }

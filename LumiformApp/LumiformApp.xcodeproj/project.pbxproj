@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		719309D12E36FD3B00704A69 /* FormLoaderCompositions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309D02E36FD3300704A69 /* FormLoaderCompositions.swift */; };
 		719309D32E36FD5C00704A69 /* MainQueueDispatcherDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309D22E36FD5500704A69 /* MainQueueDispatcherDecorator.swift */; };
+		719309DE2E37A5B800704A69 /* FormImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309DD2E37A5B500704A69 /* FormImageViewModel.swift */; };
+		719309E02E37A5DC00704A69 /* ImageQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309DF2E37A5D900704A69 /* ImageQuestionView.swift */; };
 		71E5CA552E33DFF700FA179F /* LumiformApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA542E33DFF700FA179F /* LumiformApp.swift */; };
 		71E5CA572E33DFF700FA179F /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E5CA562E33DFF700FA179F /* FormView.swift */; };
 		71E5CA592E33DFF800FA179F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 71E5CA582E33DFF800FA179F /* Assets.xcassets */; };
@@ -40,6 +42,8 @@
 /* Begin PBXFileReference section */
 		719309D02E36FD3300704A69 /* FormLoaderCompositions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormLoaderCompositions.swift; sourceTree = "<group>"; };
 		719309D22E36FD5500704A69 /* MainQueueDispatcherDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainQueueDispatcherDecorator.swift; sourceTree = "<group>"; };
+		719309DD2E37A5B500704A69 /* FormImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormImageViewModel.swift; sourceTree = "<group>"; };
+		719309DF2E37A5D900704A69 /* ImageQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageQuestionView.swift; sourceTree = "<group>"; };
 		71E5CA512E33DFF700FA179F /* LumiformApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LumiformApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E5CA542E33DFF700FA179F /* LumiformApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiformApp.swift; sourceTree = "<group>"; };
 		71E5CA562E33DFF700FA179F /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
@@ -138,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				71E5CA7F2E3401F400FA179F /* FormViewModel.swift */,
+				719309DD2E37A5B500704A69 /* FormImageViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -150,6 +155,7 @@
 				71E5CA812E34024500FA179F /* PageView.swift */,
 				71E5CA832E34025A00FA179F /* SectionView.swift */,
 				71E5CA772E33FB1200FA179F /* QuestionView.swift */,
+				719309DF2E37A5D900704A69 /* ImageQuestionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -229,11 +235,13 @@
 				71E5CA7B2E33FF3900FA179F /* HierarchyFont.swift in Sources */,
 				719309D12E36FD3B00704A69 /* FormLoaderCompositions.swift in Sources */,
 				71E5CA782E33FB1200FA179F /* QuestionView.swift in Sources */,
+				719309E02E37A5DC00704A69 /* ImageQuestionView.swift in Sources */,
 				71E5CA572E33DFF700FA179F /* FormView.swift in Sources */,
 				719309D32E36FD5C00704A69 /* MainQueueDispatcherDecorator.swift in Sources */,
 				71E5CA842E34025A00FA179F /* SectionView.swift in Sources */,
 				71E5CA552E33DFF700FA179F /* LumiformApp.swift in Sources */,
 				71E5CA762E33FA8100FA179F /* FormItemView.swift in Sources */,
+				719309DE2E37A5B800704A69 /* FormImageViewModel.swift in Sources */,
 				71E5CA822E34024500FA179F /* PageView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
