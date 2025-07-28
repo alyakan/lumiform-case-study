@@ -16,20 +16,32 @@ protocol FormImageDataLoader {
 
 final class RemoteFormImageDataLoader: FormImageDataLoader {
     private let client: HTTPClient
+    private let dataValidator: (Data) -> Bool
 
     enum Error: Swift.Error {
         case connectivity, invalidResponse, invalidData
     }
 
-    init(client: HTTPClient) {
+    init(client: HTTPClient, dataValidator: @escaping (Data) -> Bool) {
         self.client = client
+        self.dataValidator = dataValidator
     }
 
     func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
-        client.get(from: url) { result in
+        client.get(from: url) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case let .success((data, response)):
-                completion(.failure(Error.invalidResponse))
+                guard response.isOK else {
+                    return completion(.failure(Error.invalidResponse))
+                }
+
+                guard dataValidator(data) else {
+                    return completion(.failure(Error.invalidData))
+                }
+                
+                completion(.success(data))
             case .failure:
                 completion(.failure(Error.connectivity))
             }
@@ -73,11 +85,34 @@ class RemoteFormImageDataLoaderUseCaseTests: XCTestCase {
         }
     }
 
+    func test_loadImageDataFromURL_deliversInvalidDataErrorOn200HTTPResponseWithEmptyData() {
+        let (sut, client) = makeSUT(dataValidator: { _ in return false })
+        let emptyData = Data()
+
+        expect(sut, toCompleteWith: failure(.invalidData), when: {
+            client.complete(withStatusCode: 200, data: emptyData)
+        })
+    }
+
+    func test_loadImageDataFromURL_deliversNonEmptyDataOn200HTTPResponse() {
+        let (sut, client) = makeSUT()
+        let nonEmptyData = anyData()
+
+        expect(sut, toCompleteWith: .success(nonEmptyData), when: {
+            client.complete(withStatusCode: 200, data: nonEmptyData)
+        })
+    }
+
     // MARK: - Helpers
 
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FormImageDataLoader, client: HTTPClientSpy) {
+    private func makeSUT(
+        dataValidator: @escaping (Data) -> Bool = { _ in true },
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> (sut: FormImageDataLoader, client: HTTPClientSpy) {
+
         let client = HTTPClientSpy()
-        let sut = RemoteFormImageDataLoader(client: client)
+        let sut = RemoteFormImageDataLoader(client: client, dataValidator: dataValidator)
         trackForMemoryLeaks(client, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, client)

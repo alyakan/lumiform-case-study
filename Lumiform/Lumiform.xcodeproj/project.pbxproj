@@ -23,6 +23,7 @@
 		719309CC2E36E01000704A69 /* CodableFormStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309CB2E36E00900704A69 /* CodableFormStoreTests.swift */; };
 		719309CF2E36F2BD00704A69 /* CodableFormStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309CE2E36F2B800704A69 /* CodableFormStore.swift */; };
 		719309D52E37842D00704A69 /* RemoteFormImageDataLoaderUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309D42E37842600704A69 /* RemoteFormImageDataLoaderUseCaseTests.swift */; };
+		719309D82E378ECA00704A69 /* HTTPURLResponse+StatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 719309D72E378EC400704A69 /* HTTPURLResponse+StatusCode.swift */; };
 		71C51EE52E32649B00AF92C6 /* Lumiform.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71C51EDC2E32649A00AF92C6 /* Lumiform.framework */; };
 		71C51EEB2E32649B00AF92C6 /* Lumiform.h in Headers */ = {isa = PBXBuildFile; fileRef = 71C51EDF2E32649A00AF92C6 /* Lumiform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		71C51EFA2E3264B500AF92C6 /* URLSessionHTTPClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71C51EF42E3264B500AF92C6 /* URLSessionHTTPClientTests.swift */; };
@@ -61,6 +62,7 @@
 		719309CB2E36E00900704A69 /* CodableFormStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFormStoreTests.swift; sourceTree = "<group>"; };
 		719309CE2E36F2B800704A69 /* CodableFormStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableFormStore.swift; sourceTree = "<group>"; };
 		719309D42E37842600704A69 /* RemoteFormImageDataLoaderUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFormImageDataLoaderUseCaseTests.swift; sourceTree = "<group>"; };
+		719309D72E378EC400704A69 /* HTTPURLResponse+StatusCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HTTPURLResponse+StatusCode.swift"; sourceTree = "<group>"; };
 		71C51EDC2E32649A00AF92C6 /* Lumiform.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Lumiform.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		71C51EDF2E32649A00AF92C6 /* Lumiform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Lumiform.h; sourceTree = "<group>"; };
 		71C51EE42E32649B00AF92C6 /* LumiformTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LumiformTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +140,14 @@
 			path = Infrastructure;
 			sourceTree = "<group>";
 		};
+		719309D62E378EBE00704A69 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				719309D72E378EC400704A69 /* HTTPURLResponse+StatusCode.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		71C51ED22E32649A00AF92C6 = {
 			isa = PBXGroup;
 			children = (
@@ -201,6 +211,7 @@
 		71C51F002E3264C400AF92C6 /* Form API */ = {
 			isa = PBXGroup;
 			children = (
+				719309D62E378EBE00704A69 /* Helpers */,
 				7180CBA02E33AD7000A7883E /* RemoteFormLoader.swift */,
 				7180CBA22E33AE9500A7883E /* RemoteFormItem.swift */,
 				71C51EFE2E3264C400AF92C6 /* HTTPClient.swift */,
@@ -339,6 +350,7 @@
 				7180CBA82E33B31400A7883E /* FormItem.swift in Sources */,
 				719309CA2E36DF5100704A69 /* FormCacher.swift in Sources */,
 				719309C22E3585C900704A69 /* LocalFormLoader.swift in Sources */,
+				719309D82E378ECA00704A69 /* HTTPURLResponse+StatusCode.swift in Sources */,
 				71C51F022E3264C400AF92C6 /* URLSessionHTTPClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
