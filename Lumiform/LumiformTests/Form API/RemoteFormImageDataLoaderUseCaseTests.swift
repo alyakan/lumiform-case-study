@@ -103,6 +103,19 @@ class RemoteFormImageDataLoaderUseCaseTests: XCTestCase {
         })
     }
 
+    func test_loadImageDataFromURL_doesNotDeliveResultAfterSUTInstanceHasBeenDeallocated() {
+        let client = HTTPClientSpy()
+        var sut: RemoteFormImageDataLoader? = RemoteFormImageDataLoader(client: client, dataValidator: { _ in return true})
+
+        var capturedResults = [FormImageDataLoader.Result]()
+        _ = sut?.loadImageData(from: anyURL(), completion: { capturedResults.append($0) })
+
+        sut = nil
+        client.complete(withStatusCode: 200, data: anyData())
+
+        XCTAssertTrue(capturedResults.isEmpty)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(
