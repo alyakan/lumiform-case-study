@@ -20,9 +20,7 @@ final class RemoteImageDataLoaderWithCache: FormImageDataLoader {
         remoteLoader.loadImageData(from: url) { [weak self] result in
             switch result {
             case .success(let data):
-                self?.cache.saveImageData(data, for: url) { cacheResult in
-                    print(cacheResult)
-                }
+                self?.cache.saveImageData(data, for: url) { _ in }
                 completion(result)
             case .failure:
                 completion(result)
@@ -46,10 +44,7 @@ final class FormImageDataLoaderWithFallback: FormImageDataLoader {
             case .success:
                 completion(primaryResult)
             case .failure:
-                self?.fallbackLoader.loadImageData(from: url) { fallbackResult in
-                    print(fallbackResult)
-                    completion(fallbackResult)
-                }
+                self?.fallbackLoader.loadImageData(from: url, completion: completion)
             }
         }
     }

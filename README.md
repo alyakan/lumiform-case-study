@@ -36,7 +36,7 @@ The project consists of two main targets:
 
 #### Lumiform (Core Framework)
 - **Target Type**: macOS framework (for faster TDD development)
-- **Platform Support**: `iphoneos` and `iphonesimulator` 
+- **Platform Support**: `macosx`, `iphoneos` and `iphonesimulator` 
 - **Coverage**: 99% test coverage
 - **Purpose**: Core business logic, networking, and caching
 
@@ -155,20 +155,6 @@ The app implements MVVM (Model-View-ViewModel) with SwiftUI:
 - **Separation of Concerns**: ViewModels handle business logic, Views handle presentation
 - **Testability**: ViewModels can be tested independently of UI
 
-#### Factory Pattern - View Model Creation
-The `FormViewModel` acts as a factory for specialized view models:
-
-```swift
-func formImageViewModel(for question: ImageQuestion) -> FormImageViewModel {
-    return FormImageViewModel(imageDataLoader: imageDataLoader)
-}
-```
-
-**Benefits:**
-- Encapsulates creation logic
-- Ensures proper dependency injection
-- Makes testing easier with mock dependencies
-
 #### Template Method Pattern - Data Validation
 The `RemoteFormImageDataLoader` uses template method for validation:
 
@@ -181,7 +167,6 @@ init(client: HTTPClient, dataValidator: @escaping (Data) -> Bool) {
 
 **Benefits:**
 - Customizable validation logic
-- Reusable loading algorithm
 - Easy to test with different validators
 
 #### Chain of Responsibility - Fallback Loading
