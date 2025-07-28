@@ -11,16 +11,17 @@ import Lumiform
 final class FormImageViewModel: ObservableObject {
     private let imageDataLoader: FormImageDataLoader
 
-    @Published var uiimage: UIImage?
     @Published var error: String?
+    @Published var uiimages: [String: UIImage] = [:]
 
     init(imageDataLoader: FormImageDataLoader) {
         self.imageDataLoader = imageDataLoader
     }
 
     func load(from sourceURL: URL) {
-        error = nil
-        imageDataLoader.loadImageData(from: sourceURL) { result in
+        imageDataLoader.loadImageData(from: sourceURL) { [weak self] result in
+            guard let self else { return }
+
             switch result {
             case .success(let data):
                 guard let image = UIImage(data: data) else {
@@ -28,10 +29,14 @@ final class FormImageViewModel: ObservableObject {
                     return
                 }
 
-                self.uiimage = image
+                self.uiimages[sourceURL.absoluteString] = image
             case .failure:
                 self.error = "Failed to load image. Tap to retry."
             }
         }
+    }
+
+    func clearError() {
+        error = nil
     }
 }
