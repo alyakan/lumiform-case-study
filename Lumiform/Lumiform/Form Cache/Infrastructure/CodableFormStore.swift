@@ -5,6 +5,8 @@
 //  Created by Aly Yakan on 28/07/2025.
 //
 
+import CryptoKit
+
 public final class CodableFormStore: FormStore {
 
     private struct Cache: Codable {
@@ -104,7 +106,13 @@ extension CodableFormStore: FormImageDataStore {
     }
 
     private func imageFileURL(for url: URL) -> URL {
-        storeURL.appending(component: "img\(url.absoluteString.hashValue)")
+        storeURL.appending(component: "img\(stableHashValue(for: url.absoluteString))")
+    }
+
+    private func stableHashValue(for string: String) -> String {
+        let data = Data(string.utf8)
+        let digest = SHA256.hash(data: data)
+        return digest.compactMap { String(format: "%02x", $0) }.joined()
     }
 
     private func createStoreDirectoryIfNeeded() throws {
