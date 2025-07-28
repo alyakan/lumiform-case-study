@@ -52,6 +52,21 @@ final class LocalFormImageDataLoaderUseCaseTests: XCTestCase {
         })
     }
 
+    func test_loadImageDataFromURL_doesNotDeliverResultAfterDeallocatingSUT() {
+        let store = FormImageDataStoreSpy()
+        var sut: LocalFormImageDataLoader? = LocalFormImageDataLoader(store: store)
+
+        var receivedResult: FormImageDataLoader.Result?
+        _ = sut?.loadImageData(from: anyURL()) { result in
+            receivedResult = result
+        }
+
+        sut = nil
+        store.completeRetrievalSuccessfully(with: anyData())
+
+        XCTAssertNil(receivedResult, "Expected no result, but received: \(String(describing: receivedResult))")
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FormImageDataLoader, store: FormImageDataStoreSpy) {

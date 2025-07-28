@@ -51,7 +51,9 @@ final class LocalFormImageDataLoader: FormImageDataCacher, FormImageDataLoader {
     }
 
     func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
-        store.retrieveData(for: url) { result in
+        store.retrieveData(for: url) { [weak self] result in
+            guard self != nil else { return }
+
             switch result {
             case .success(let data):
                 guard let data else {
