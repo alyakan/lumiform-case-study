@@ -1,5 +1,7 @@
 # lumiform-case-study
 
+[![Swift](https://github.com/alyakan/lumiform-case-study/actions/workflows/CI.yml/badge.svg)](https://github.com/alyakan/lumiform-case-study/actions/workflows/CI.yml)
+
 ## Lumiform
 
 - The `Lumiform` target was created as a macOS target for faster TDD. 
