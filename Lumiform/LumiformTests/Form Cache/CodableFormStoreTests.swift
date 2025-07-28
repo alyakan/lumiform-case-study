@@ -121,7 +121,7 @@ class CodableFormStoreTests: XCTestCase {
         sut.retrieve { receivedResult in
             switch (receivedResult, expectedResult) {
             case let (.success(receivedForm), .success(expectedForm)):
-                XCTAssertEqual(receivedForm, expectedForm)
+                XCTAssertEqual(receivedForm, expectedForm, file: file, line: line)
             case (.failure, .failure):
                 break
             default:
