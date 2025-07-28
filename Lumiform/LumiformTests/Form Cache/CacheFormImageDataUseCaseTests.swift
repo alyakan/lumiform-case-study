@@ -32,7 +32,9 @@ final class LocalFormImageDataLoader: FormImageDataCacher {
     }
 
     func saveImageData(_ data: Data, for url: URL, completion: @escaping (FormImageDataCacher.Result) -> Void) {
-        store.insert(data, for: url) { result in
+        store.insert(data, for: url) { [weak self] result in
+            guard self != nil else { return }
+
             switch result {
             case .success:
                 completion(.success(()))
@@ -75,6 +77,22 @@ class CacheFormImageDataUseCaseTests: XCTestCase {
         expect(sut, toCompleteWith: .success(())) {
             store.completeInsertionSuccessfully()
         }
+    }
+
+    func test_saveImageDataForURL_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+        let store = FormImageDataStoreSpy()
+        var sut: LocalFormImageDataLoader? = LocalFormImageDataLoader(store: store)
+
+        var receivedResults: [FormImageDataStore.InsertionResult] = []
+        sut?.saveImageData(anyData(), for: anyURL()) { result in
+            receivedResults.append(result)
+        }
+
+        sut = nil
+        store.completeInsertion(with: anyNSError())
+        store.completeInsertionSuccessfully()
+
+        XCTAssertTrue(receivedResults.isEmpty, "Expected no result, but received: \(String(describing: receivedResults))")
     }
 
     // MARK: - Helpers
