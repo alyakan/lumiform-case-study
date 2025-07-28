@@ -8,27 +8,33 @@
 import XCTest
 import Lumiform
 
-protocol FeedImageDataStore {
+protocol FormImageDataStore {
     typealias InsertionResult = Swift.Result<Void, Error>
 
     func insert(_ data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void)
 }
 
 protocol FormImageDataCacher {
-    typealias Result = (Swift.Result<Data, Error>) -> Void
+    typealias Result = Swift.Result<Void, Error>
 
     func saveImageData(_ data: Data, for url: URL, completion: @escaping (Result) -> Void)
 }
 
 final class LocalFormImageDataLoader: FormImageDataCacher {
-    private let store: FeedImageDataStore
+    private let store: FormImageDataStore
 
-    init(store: FeedImageDataStore) {
+    init(store: FormImageDataStore) {
         self.store = store
     }
 
+    enum SaveError: Swift.Error {
+        case failed
+    }
+
     func saveImageData(_ data: Data, for url: URL, completion: @escaping (FormImageDataCacher.Result) -> Void) {
-        store.insert(data, for: url) { _ in }
+        store.insert(data, for: url) { _ in
+            completion(.failure(SaveError.failed))
+        }
     }
 }
 
@@ -50,18 +56,51 @@ class CacheFormImageDataUseCaseTests: XCTestCase {
         XCTAssertEqual(store.receivedMessages, [.insert(data: data, for: url)])
     }
 
+    func test_saveImageDataForURL_failsOnStoreError() {
+        let (sut, store) = makeSUT()
+
+        expect(sut, toCompleteWith: .failure(LocalFormImageDataLoader.SaveError.failed), when: {
+            store.completeInsertion(with: anyNSError())
+        })
+    }
+
     // MARK: - Helpers
 
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FormImageDataCacher, FeedImageDataStoreSpy) {
-        let store = FeedImageDataStoreSpy()
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FormImageDataCacher, FormImageDataStoreSpy) {
+        let store = FormImageDataStoreSpy()
         let sut = LocalFormImageDataLoader(store: store)
         trackForMemoryLeaks(store, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, store)
     }
 
-    private class FeedImageDataStoreSpy: FeedImageDataStore {
-        private var insertionCompletions: [(FeedImageDataStore.InsertionResult) -> Void] = []
+    private func expect(
+        _ sut: FormImageDataCacher,
+        toCompleteWith expectedResult: FormImageDataStore.InsertionResult,
+        when action: () -> Void,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        let expectation = XCTestExpectation(description: "Wait for load image data")
+        sut.saveImageData(anyData(), for: anyURL()) { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case (.success, .success):
+                break
+            case let (.failure(receivedError as LocalFormImageDataLoader.SaveError), .failure(expectedError as LocalFormImageDataLoader.SaveError)):
+                XCTAssertEqual(receivedError, expectedError)
+            default:
+                XCTFail("Expected result \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+            }
+            expectation.fulfill()
+        }
+
+        action()
+
+        wait(for: [expectation], timeout: 0.1)
+    }
+
+    private class FormImageDataStoreSpy: FormImageDataStore {
+        private var insertionCompletions: [(FormImageDataStore.InsertionResult) -> Void] = []
 
         private(set) var receivedMessages = [Message]()
 
@@ -72,6 +111,10 @@ class CacheFormImageDataUseCaseTests: XCTestCase {
         func insert(_ data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void) {
             receivedMessages.append(.insert(data: data, for: url))
             insertionCompletions.append(completion)
+        }
+
+        func completeInsertion(with error: NSError, at index: Int = 0) {
+            insertionCompletions[index](.failure(error))
         }
     }
 }
