@@ -32,8 +32,13 @@ final class LocalFormImageDataLoader: FormImageDataCacher {
     }
 
     func saveImageData(_ data: Data, for url: URL, completion: @escaping (FormImageDataCacher.Result) -> Void) {
-        store.insert(data, for: url) { _ in
-            completion(.failure(SaveError.failed))
+        store.insert(data, for: url) { result in
+            switch result {
+            case .success:
+                completion(.success(()))
+            case .failure:
+                completion(.failure(SaveError.failed))
+            }
         }
     }
 }
@@ -62,6 +67,14 @@ class CacheFormImageDataUseCaseTests: XCTestCase {
         expect(sut, toCompleteWith: .failure(LocalFormImageDataLoader.SaveError.failed), when: {
             store.completeInsertion(with: anyNSError())
         })
+    }
+
+    func test_saveImageDataForURL_succeedsOnSuccessfulStoreInsertion() {
+        let (sut, store) = makeSUT()
+
+        expect(sut, toCompleteWith: .success(())) {
+            store.completeInsertionSuccessfully()
+        }
     }
 
     // MARK: - Helpers
@@ -115,6 +128,10 @@ class CacheFormImageDataUseCaseTests: XCTestCase {
 
         func completeInsertion(with error: NSError, at index: Int = 0) {
             insertionCompletions[index](.failure(error))
+        }
+
+        func completeInsertionSuccessfully(at index: Int = 0) {
+            insertionCompletions[index](.success(()))
         }
     }
 }
