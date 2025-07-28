@@ -39,4 +39,8 @@ class FormImageDataStoreSpy: FormImageDataStore {
     func completeRetrieval(with error: NSError, at index: Int = 0) {
         retrievalCompletions[index](.failure(error))
     }
+
+    func completeRetrievalSuccessfully(with data: Data?, at index: Int = 0) {
+        retrievalCompletions[index](.success(data))
+    }
 }
