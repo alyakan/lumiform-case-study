@@ -13,7 +13,7 @@ public final class CodableFormStore: FormStore {
     }
 
     private let storeURL: URL
-    private let queue = DispatchQueue(label: "com.lumiform.CodableFormStore", qos: .userInitiated)
+    private let queue = DispatchQueue(label: "com.lumiform.CodableFormStore", qos: .userInitiated, attributes: .concurrent)
 
     public init(storeURL: URL) {
         self.storeURL = storeURL
@@ -21,7 +21,7 @@ public final class CodableFormStore: FormStore {
 
     public func deleteCachedForm(completion: @escaping DeletionCompletion) {
         let storeURL = self.storeURL
-        queue.async {
+        queue.async(flags: .barrier) {
             guard FileManager.default.fileExists(atPath: storeURL.path) else {
                 return completion(.success(()))
             }
@@ -37,7 +37,7 @@ public final class CodableFormStore: FormStore {
 
     public func insert(_ form: Lumiform.Form, timestamp: Date, completion: @escaping InsertionCompletion) {
         let storeURL = self.storeURL
-        queue.async {
+        queue.async(flags: .barrier) {
             let encoder = JSONEncoder()
             do {
                 let encoded = try encoder.encode(Cache(formItem: form.rootPage, timestamp: timestamp))
@@ -55,7 +55,7 @@ public final class CodableFormStore: FormStore {
             guard let data = try? Data(contentsOf: storeURL) else {
                 return completion(.success(nil))
             }
-            
+
             let decoder = JSONDecoder()
             do {
                 let decoded = try decoder.decode(Cache.self, from: data)
