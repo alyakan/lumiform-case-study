@@ -8,66 +8,6 @@
 import XCTest
 import Lumiform
 
-protocol FormImageDataStore {
-    typealias InsertionResult = Swift.Result<Void, Error>
-    typealias RetrievalResult = Swift.Result<Data?, Error>
-
-    func insert(_ data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void)
-    func retrieveData(for url: URL, completion: @escaping (RetrievalResult) -> Void)
-}
-
-protocol FormImageDataCacher {
-    typealias Result = Swift.Result<Void, Error>
-
-    func saveImageData(_ data: Data, for url: URL, completion: @escaping (Result) -> Void)
-}
-
-final class LocalFormImageDataLoader: FormImageDataCacher, FormImageDataLoader {
-    private let store: FormImageDataStore
-
-    init(store: FormImageDataStore) {
-        self.store = store
-    }
-
-    enum SaveError: Swift.Error {
-        case failed
-    }
-
-    func saveImageData(_ data: Data, for url: URL, completion: @escaping (FormImageDataCacher.Result) -> Void) {
-        store.insert(data, for: url) { [weak self] result in
-            guard self != nil else { return }
-
-            switch result {
-            case .success:
-                completion(.success(()))
-            case .failure:
-                completion(.failure(SaveError.failed))
-            }
-        }
-    }
-
-    enum LoadError: Swift.Error {
-        case failed, notFound
-    }
-
-    func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
-        store.retrieveData(for: url) { [weak self] result in
-            guard self != nil else { return }
-
-            switch result {
-            case .success(let data):
-                guard let data else {
-                    return completion(.failure(LoadError.notFound))
-                }
-
-                completion(.success(data))
-            case .failure:
-                completion(.failure(LoadError.failed))
-            }
-        }
-    }
-}
-
 class CacheFormImageDataUseCaseTests: XCTestCase {
 
     func test_init_doesNotMessageStore() {
