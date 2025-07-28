@@ -9,11 +9,13 @@ import SwiftUI
 import Lumiform
 
 struct FormItemView: View {
-    let item: FormItem
-    let sectionDepth: Int
-    let isRootItem: Bool
+    private let viewModel: FormViewModel
+    private let item: FormItem
+    private let sectionDepth: Int
+    private let isRootItem: Bool
 
-    init(item: FormItem, sectionDepth: Int, isRootItem: Bool = false) {
+    init(viewModel: FormViewModel, item: FormItem, sectionDepth: Int, isRootItem: Bool = false) {
+        self.viewModel = viewModel
         self.item = item
         self.sectionDepth = sectionDepth
         self.isRootItem = isRootItem
@@ -22,11 +24,11 @@ struct FormItemView: View {
     var body: some View {
         switch item {
         case .page(let page):
-            PageView(page: page, sectionDepth: sectionDepth, isRoot: isRootItem)
+            PageView(viewModel: viewModel, page: page, sectionDepth: sectionDepth, isRoot: isRootItem)
         case .section(let section):
-            SectionView(section: section, depth: sectionDepth)
+            SectionView(viewModel: viewModel, section: section, depth: sectionDepth)
         case .question(let question):
-            QuestionView(question: question)
+            QuestionView(viewModel: viewModel, question: question)
         @unknown default:
             Text("Unknown form item")
                 .font(.title)

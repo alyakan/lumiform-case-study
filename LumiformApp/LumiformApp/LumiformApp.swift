@@ -22,15 +22,10 @@ struct LumiformApp: App {
         let httpClient = URLSessionHTTPClient(session: urlSession)
         let localStore = CodableFormStore(storeURL: Constants.localFormStoreURL)
 
-        let remoteLoader = RemoteFormLoader(url: Constants.serverURL, client: httpClient)
-        let localLoader = LocalFormLoader(store: localStore, currentDate: Date.init)
-        let remoteLoaderWithCache = RemoteLoaderWithCache(remoteLoader: remoteLoader, formCacher: localLoader)
-        let remoteLoaderWithLocalFallback = FormLoaderWithFallback(formLoader: remoteLoaderWithCache, fallbackLoader: localLoader)
+        let formLoader = LumiformApp.composeFormLoader(httpClient: httpClient, localStore: localStore)
+        let formImageDataLoader = LumiformApp.composeFormImageDataLoader(httpClient: httpClient)
 
-        let mainQueueFormLoader = MainQueueDispatchDecorator(decoratee: remoteLoaderWithLocalFallback)
-//        let mainQueueFormLoader = MainQueueDispatchDecorator(decoratee: remoteLoader)
-
-        self.formViewModel = FormViewModel(loader: mainQueueFormLoader)
+        self.formViewModel = FormViewModel(loader: formLoader, imageDataLoader: formImageDataLoader)
     }
 
     var body: some Scene {
@@ -40,5 +35,29 @@ struct LumiformApp: App {
                     .navigationTitle(Text("Lumiform"))
             }
         }
+    }
+}
+
+// MARK: - Helpers
+
+extension LumiformApp {
+
+    private static func composeFormLoader(httpClient: HTTPClient, localStore: CodableFormStore) -> FormLoader {
+        let remoteLoader = RemoteFormLoader(url: Constants.serverURL, client: httpClient)
+        let localLoader = LocalFormLoader(store: localStore, currentDate: Date.init)
+        let remoteLoaderWithCache = RemoteLoaderWithCache(remoteLoader: remoteLoader, formCacher: localLoader)
+        let remoteLoaderWithLocalFallback = FormLoaderWithFallback(formLoader: remoteLoaderWithCache, fallbackLoader: localLoader)
+
+        let mainQueueFormLoader = MainQueueDispatchDecorator(decoratee: remoteLoaderWithLocalFallback)
+        return mainQueueFormLoader
+    }
+
+    private static func composeFormImageDataLoader(httpClient: HTTPClient) -> FormImageDataLoader {
+        let remoteImageDataLoader = RemoteFormImageDataLoader(client: httpClient, dataValidator: { imageData in
+            UIImage(data: imageData) != nil
+        })
+
+        let mainQueueFormImageDataLoader = MainQueueDispatchDecorator(decoratee: remoteImageDataLoader)
+        return mainQueueFormImageDataLoader
     }
 }

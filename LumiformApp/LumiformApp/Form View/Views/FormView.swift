@@ -29,7 +29,7 @@ struct FormView: View {
                             .font(.headline)
                     }
                 } else if let rootItem = viewModel.rootItem {
-                    FormItemView(item: rootItem, sectionDepth: 0, isRootItem: true)
+                    FormItemView(viewModel: viewModel, item: rootItem, sectionDepth: 0, isRootItem: true)
                 } else {
                     ProgressView()
                 }
@@ -40,9 +40,13 @@ struct FormView: View {
 }
 
 #Preview {
-    FormView(viewModel: FormViewModel(loader: MockLoader()))
+    FormView(viewModel: FormViewModel(loader: MockLoader(), imageDataLoader: MockImageDataLoader()))
 }
 
 class MockLoader: FormLoader {
     func load(completion: @escaping (FormLoader.Result) -> Void) {}
+}
+
+class MockImageDataLoader: FormImageDataLoader {
+    func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {}
 }

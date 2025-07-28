@@ -30,3 +30,11 @@ extension MainQueueDispatchDecorator: FormLoader where T: FormLoader {
         }
     }
 }
+
+extension MainQueueDispatchDecorator: FormImageDataLoader where T: FormImageDataLoader {
+    func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
+        decoratee.loadImageData(from: url) { [weak self] result in
+            self?.dispatch { completion(result) }
+        }
+    }
+}
