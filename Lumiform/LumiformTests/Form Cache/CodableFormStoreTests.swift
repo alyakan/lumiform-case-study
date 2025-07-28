@@ -75,7 +75,7 @@ class CodableFormStoreTests: XCTestCase {
         expect(sut, toRetrieve: .success(nil))
     }
 
-    func test_storeOperations_runSerially() {
+    func test_storeWriteOperations_runSerially() {
         let sut = makeSUT()
         var completedExpectations = [XCTestExpectation]()
 
@@ -92,14 +92,20 @@ class CodableFormStoreTests: XCTestCase {
         }
 
         let op3 = expectation(description: "Op 3")
-        sut.insert(form(), timestamp: Date()) { _ in
+        sut.deleteCachedForm { _ in
             completedExpectations.append(op3)
             op3.fulfill()
         }
 
+        let op4 = expectation(description: "Op 4")
+        sut.insert(form(), timestamp: Date()) { _ in
+            completedExpectations.append(op4)
+            op4.fulfill()
+        }
+
         waitForExpectations(timeout: 5.0)
 
-        XCTAssertEqual(completedExpectations, [op1, op2, op3], "Expected operations to run serially but this was the order: \(completedExpectations)")
+        XCTAssertEqual(completedExpectations, [op1, op2, op3, op4], "Expected operations to run serially but this was the order: \(completedExpectations)")
     }
 
     // MARK: - Helpers
