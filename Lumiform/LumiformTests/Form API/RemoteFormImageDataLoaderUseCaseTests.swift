@@ -8,10 +8,22 @@
 import XCTest
 import Lumiform
 
-protocol FormImageDataLoader {}
+protocol FormImageDataLoader {
+    typealias Result = Swift.Result<Data, Error>
+
+    func loadImageData(from url: URL, completion: @escaping (Result) -> Void)
+}
 
 final class RemoteFormImageDataLoader: FormImageDataLoader {
-    init(client: HTTPClient) {}
+    private let client: HTTPClient
+
+    init(client: HTTPClient) {
+        self.client = client
+    }
+
+    func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
+        client.get(from: url) { _ in }
+    }
 }
 
 class RemoteFormImageDataLoaderUseCaseTests: XCTestCase {
@@ -20,6 +32,15 @@ class RemoteFormImageDataLoaderUseCaseTests: XCTestCase {
         let (_, client) = makeSUT()
 
         XCTAssertTrue(client.requestedURLs.isEmpty)
+    }
+
+    func test_loadImageDataFromURL_requestsDataFromURL() {
+        let (sut, client) = makeSUT()
+        let url = anyURL()
+        
+        _ = sut.loadImageData(from: url) { _ in }
+
+        XCTAssertEqual(client.requestedURLs, [url])
     }
 
     // MARK: - Helpers
