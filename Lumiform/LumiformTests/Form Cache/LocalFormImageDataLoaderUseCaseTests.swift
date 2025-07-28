@@ -34,6 +34,15 @@ final class LocalFormImageDataLoaderUseCaseTests: XCTestCase {
         })
     }
 
+    func test_loadImageDataFromURL_deliversNotFoundErrorOnDataNotFound() {
+        let (sut, store) = makeSUT()
+        let notFoundError = LocalFormImageDataLoader.LoadError.notFound
+
+        expect(sut, toCompleteWith: .failure(notFoundError), when: {
+            store.completeRetrievalSuccessfully(with: .none)
+        })
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FormImageDataLoader, store: FormImageDataStoreSpy) {

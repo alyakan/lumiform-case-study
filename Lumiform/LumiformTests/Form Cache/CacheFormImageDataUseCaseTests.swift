@@ -47,12 +47,19 @@ final class LocalFormImageDataLoader: FormImageDataCacher, FormImageDataLoader {
     }
 
     enum LoadError: Swift.Error {
-        case failed
+        case failed, notFound
     }
 
     func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
-        store.retrieveData(for: url) { _ in
-            completion(.failure(LoadError.failed))
+        store.retrieveData(for: url) { result in
+            switch result {
+            case .success(let data):
+                guard let data else {
+                    return completion(.failure(LoadError.notFound))
+                }
+            case .failure:
+                completion(.failure(LoadError.failed))
+            }
         }
     }
 }
