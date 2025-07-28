@@ -9,6 +9,7 @@ import SwiftUI
 import Lumiform
 
 struct ImageQuestionView: View {
+    @State private var showFullScreen = false
     @ObservedObject private var viewModel: FormImageViewModel
     private let question: ImageQuestion
 
@@ -20,8 +21,14 @@ struct ImageQuestionView: View {
     }
 
     var body: some View {
-        if let uiimage = viewModel.uiimage {
+        if let uiimage = viewModel.uiimages[question.pngSourceURL.absoluteString] {
             Image(uiImage: uiimage)
+                .onTapGesture {
+                    showFullScreen = true
+                }
+                .sheet(isPresented: $showFullScreen) {
+                    FullImageQuestionView(viewModel: viewModel, question: question)
+                }
         } else if let error = viewModel.error {
             Text(error)
                 .font(HierarchyFont.questionFont())
