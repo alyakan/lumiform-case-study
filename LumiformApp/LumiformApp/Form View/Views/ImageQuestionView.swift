@@ -18,6 +18,7 @@ struct ImageQuestionView: View {
         self.question = question
 
         viewModel.load(from: question.pngSourceURL)
+        viewModel.load(from: question.sourceURL)
     }
 
     var body: some View {
