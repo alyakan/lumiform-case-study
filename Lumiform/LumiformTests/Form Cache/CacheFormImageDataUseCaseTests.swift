@@ -10,8 +10,10 @@ import Lumiform
 
 protocol FormImageDataStore {
     typealias InsertionResult = Swift.Result<Void, Error>
+    typealias RetrievalResult = Swift.Result<Data?, Error>
 
     func insert(_ data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void)
+    func retrieveData(for url: URL, completion: @escaping (RetrievalResult) -> Void)
 }
 
 protocol FormImageDataCacher {
@@ -20,7 +22,7 @@ protocol FormImageDataCacher {
     func saveImageData(_ data: Data, for url: URL, completion: @escaping (Result) -> Void)
 }
 
-final class LocalFormImageDataLoader: FormImageDataCacher {
+final class LocalFormImageDataLoader: FormImageDataCacher, FormImageDataLoader {
     private let store: FormImageDataStore
 
     init(store: FormImageDataStore) {
@@ -41,6 +43,16 @@ final class LocalFormImageDataLoader: FormImageDataCacher {
             case .failure:
                 completion(.failure(SaveError.failed))
             }
+        }
+    }
+
+    enum LoadError: Swift.Error {
+        case failed
+    }
+
+    func loadImageData(from url: URL, completion: @escaping (FormImageDataLoader.Result) -> Void) {
+        store.retrieveData(for: url) { _ in
+            completion(.failure(LoadError.failed))
         }
     }
 }
@@ -128,28 +140,5 @@ class CacheFormImageDataUseCaseTests: XCTestCase {
         action()
 
         wait(for: [expectation], timeout: 0.1)
-    }
-
-    private class FormImageDataStoreSpy: FormImageDataStore {
-        private var insertionCompletions: [(FormImageDataStore.InsertionResult) -> Void] = []
-
-        private(set) var receivedMessages = [Message]()
-
-        enum Message: Equatable {
-            case insert(data: Data, for: URL)
-        }
-
-        func insert(_ data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void) {
-            receivedMessages.append(.insert(data: data, for: url))
-            insertionCompletions.append(completion)
-        }
-
-        func completeInsertion(with error: NSError, at index: Int = 0) {
-            insertionCompletions[index](.failure(error))
-        }
-
-        func completeInsertionSuccessfully(at index: Int = 0) {
-            insertionCompletions[index](.success(()))
-        }
     }
 }
